@@ -9,6 +9,7 @@ export interface IUser extends Document {
   interests: mongoose.Types.ObjectId[];
   following: mongoose.Types.ObjectId[];
   friends: mongoose.Types.ObjectId[]; // mutual followers
+  followers: mongoose.Types.ObjectId[]; // 👈 Add this line
 }
 
 const UserSchema: Schema<IUser> = new Schema({
@@ -17,6 +18,7 @@ const UserSchema: Schema<IUser> = new Schema({
   password: { type: String, required: true },
   interests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Interest', default: [] }],
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
+  followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }], // 👈 Add this line
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
 }, { timestamps: true });
 

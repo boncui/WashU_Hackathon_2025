@@ -231,6 +231,44 @@ router.post('/:id/follow/:targetId', authenticate, async (req: AuthenticatedRequ
   
     res.status(200).json({ message: "Unfollowed successfully" });
   });
+
+  // ✅ Follow by Email
+  router.post('/:id/follow-by-email', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const currentUserId = req.params.id
+      const { email } = req.body
+  
+      if (!email) return res.status(400).json({ error: "Email is required" })
+  
+      const targetUser = await User.findOne({ email })
+      const currentUser = await User.findById(currentUserId)
+  
+      if (!targetUser || !currentUser) return res.status(404).json({ error: "User not found" })
+  
+      const alreadyFollowing = currentUser.following?.includes(targetUser._id)
+      if (alreadyFollowing) return res.status(400).json({ error: "Already following this user" })
+  
+      // Add to following & followers
+      currentUser.following.push(targetUser._id)
+      targetUser.followers.push(currentUser._id)
+  
+      // Mutual follow = friends
+      const isMutual = targetUser.following.includes(currentUser._id)
+      if (isMutual) {
+        currentUser.friends.push(targetUser._id)
+        targetUser.friends.push(currentUser._id)
+      }
+  
+      await currentUser.save()
+      await targetUser.save()
+  
+      return res.status(200).json({ message: "Followed successfully" })
+    } catch (error) {
+      console.error("❌ Error in follow-by-email:", error)
+      res.status(500).json({ error: "Server error" })
+    }
+  })
+  
   
 
 

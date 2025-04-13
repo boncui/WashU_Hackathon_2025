@@ -1,4 +1,5 @@
 // types/user.ts
+
 export type InterestType = "transactional" | "informational"
 
 export interface Article {
@@ -23,4 +24,7 @@ export interface User {
   fullName: string
   email: string
   interests?: Interest[]
+  following?: string[]        // User IDs
+  followers?: string[]        // User IDs
+  friends?: string[]          // Mutual User IDs
 }
