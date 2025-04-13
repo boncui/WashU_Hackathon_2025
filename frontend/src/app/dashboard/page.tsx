@@ -16,12 +16,8 @@ import { Button } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth"
 import { BarChart, Clock, Zap, ArrowUpRight } from "lucide-react"
 import Link from "next/link"
+import { User } from "@/types/user"
 
-interface User {
-  _id: string
-  fullName: string
-  email: string
-}
 
 export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null)
@@ -168,6 +164,33 @@ export default function DashboardPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              
+              {/* Your Interests */}
+              <Card className="col-span-7">
+                <CardHeader>
+                  <CardTitle>Your Interests</CardTitle>
+                  <CardDescription>Categories you follow to stay informed</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                    {user.interests && user.interests.length > 0 ? (
+                      user.interests.map((interest) => (
+                        <Card key={interest._id} className="bg-muted p-4">
+                          <CardTitle className="text-base">{interest.name}</CardTitle>
+                          <CardDescription className="text-sm capitalize">{interest.type}</CardDescription>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            {interest.update ? "✅ Updates enabled" : "🚫 Updates off"}
+                          </p>
+                        </Card>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">You haven’t added any interests yet.</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
             </div>
           </DashboardShell>
         </main>

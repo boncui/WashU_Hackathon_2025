@@ -1,9 +1,11 @@
+// backend/src/models/Interests.ts
 import mongoose, { Schema, Document } from 'mongoose'
 
 export enum InterestType {
-  Type1 = 'Transactional',
-  Type2 = 'Informational',
+  Transactional = 'transactional',
+  Informational = 'informational',
 }
+
 
 export interface IInterests extends Document {
   _id: mongoose.Types.ObjectId
@@ -15,7 +17,7 @@ export interface IInterests extends Document {
 
 const InterestSchema: Schema<IInterests> = new Schema({
   name: { type: String, required: true },
-  type: { type: String, enum: Object.values(InterestType), required: true },
+  type: { type: String, enum: Object.values(InterestType), required: true }, // ✅ matches frontend now
   update: { type: Boolean, required: true },
   articles: {
     type: [mongoose.Schema.Types.ObjectId],
@@ -25,6 +27,7 @@ const InterestSchema: Schema<IInterests> = new Schema({
       'An interest can only have up to 5 articles',
     ],
   },
-}, { timestamps: true }) // ⏰ Optional
+}, { timestamps: true })
+
 
 export default mongoose.model<IInterests>('Interest', InterestSchema)

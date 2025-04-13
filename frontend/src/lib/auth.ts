@@ -1,8 +1,6 @@
-interface User {
-  _id: string
-  fullName: string
-  email: string
-}
+// lib/auth.ts
+import { User } from "@/types/user"
+
 
 interface SignInCredentials {
   email: string
@@ -34,6 +32,7 @@ export async function signIn({ email, password }: SignInCredentials): Promise<Us
     if (typeof window !== "undefined") {
       localStorage.setItem(AUTH_TOKEN_KEY, token)
     }
+
     return user
   } catch (err: any) {
     throw new Error(err.message || "Unexpected error during login")
@@ -52,25 +51,30 @@ export async function signUp({ fullName, email, password }: SignUpCredentials): 
     const data = await res.json()
     if (!res.ok) throw new Error(data.error || "Signup failed")
 
-    return data // data is the new user (without token)
+    return data // data is the new user object
   } catch (err: any) {
     throw new Error(err.message || "Unexpected error during signup")
   }
 }
 
-// 👤 GET CURRENT USER
+// 👤 GET CURRENT USER (using token from localStorage)
 export async function getCurrentUser(): Promise<User | null> {
   try {
     const token = typeof window !== "undefined" ? localStorage.getItem(AUTH_TOKEN_KEY) : null
     if (!token) return null
 
     const res = await fetch(`${API_BASE_URL}/me`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
 
     if (!res.ok) return null
-    return await res.json()
-  } catch {
+
+    const user: User = await res.json()
+    return user
+  } catch (err) {
+    console.error("❌ Failed to fetch current user:", err)
     return null
   }
 }

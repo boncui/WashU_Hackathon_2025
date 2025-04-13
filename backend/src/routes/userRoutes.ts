@@ -5,6 +5,8 @@ import { authenticate, AuthenticatedRequest } from '../middleware/authMiddleware
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import User from '../models/User';
+import Interests from '../models/Interests';
+import Article from '../models/Article';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -86,19 +88,38 @@ router.post('/login', async (req: Request, res: Response) => {
 // ✅ GET Authenticated User Data
 router.get('/me', authenticate, async (req: AuthenticatedRequest, res: Response) => {
     try {
-        if (!req.user) return res.status(401).json({ error: 'Unauthorized: No user found' });
+      if (!req.user) {
+        console.warn("No user attached to request")
+        return res.status(401).json({ error: 'Unauthorized: No user found' });
+      }
+  
+      console.log("🪪 Authenticated user id:", req.user._id)
+  
+      const user = await User.findById(req.user._id)
+        .select('-password')
+        .populate({
+            path: 'interests',
+            populate: {
+            path: 'articles',
+            match: {}, // ✅ prevents crashes from null or broken references
+            },
+        })
+        .lean(); // ✅ also prevents Mongoose serialization bugs
 
-        const user = await User.findById(req.user._id)
-            .select('-password')
-            .populate('interests');
-
-        if (!user) return res.status(404).json({ error: 'User not found' });
-
-        res.status(200).json(user);
+  
+      if (!user) {
+        console.warn("User document not found in DB")
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      res.status(200).json(user);
     } catch (error) {
-        res.status(500).json({ error: 'Server error fetching user data' });
+      console.error("🔥 /me route error:", error)
+      return res.status(500).json({ error: error instanceof Error ? error.message : 'Server error fetching user data' });
     }
-});
+  });
+  
+  
 
 // ✅ GET User by ID
 router.get('/:id', async (req: Request, res: Response) => {
