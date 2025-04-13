@@ -1,3 +1,4 @@
+//userRoutes.ts
 import express, { NextFunction, Request, Response, Router } from 'express';
 import { check, validationResult } from 'express-validator';
 import { authenticate, AuthenticatedRequest } from '../middleware/authMiddleware';
@@ -54,7 +55,7 @@ router.post('/register', validateCreateUser, handleValidationErrors, async (req:
 
         // Hash password & create user
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ fullName, email, password: hashedPassword, role: 'User' });
+        const user = new User({ fullName, email, password: hashedPassword });
         await user.save();
 
         res.status(201).json(user);
@@ -76,12 +77,12 @@ router.post('/login', async (req: Request, res: Response) => {
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) return res.status(401).json({ error: 'Invalid credentials' });
 
-        // Generate JWT token (Includes role)
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET!, {
+        // Generate JWT token
+        const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET!, {
             expiresIn: '1h',
         });
 
-        res.status(200).json({ token, user: { _id: user._id, fullName: user.fullName, email: user.email, role: user.role } });
+        res.status(200).json({ token, user: { _id: user._id, fullName: user.fullName, email: user.email } });
     } catch (error) {
         res.status(500).json({ error: error instanceof Error ? error.message : 'An unknown error occurred.' });
     }

@@ -14,7 +14,7 @@ export default function DemoPage() {
               <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
                 <HelpCircle className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold">ShouldIQ</span>
+              <span className="text-xl font-bold">Omnivia</span>
             </Link>
           </div>
 
@@ -38,9 +38,9 @@ export default function DemoPage() {
             <ArrowLeft className="mr-1 h-4 w-4" />
             Back to home
           </Link>
-          <h1 className="text-3xl font-bold mb-2">Try ShouldIQ Demo</h1>
+          <h1 className="text-3xl font-bold mb-2">Try Omnivia Demo</h1>
           <p className="text-muted-foreground">
-            Experience how ShouldIQ can help you make better decisions. This is a limited demo with 3 free queries.
+            Experience how Omnivia can help you make better decisions. This is a limited demo with 3 free queries.
           </p>
         </div>
 
@@ -60,7 +60,7 @@ export default function DemoPage() {
 
       <footer className="border-t py-6">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          ShouldIQ © {new Date().getFullYear()} - Your personal decision-making assistant
+        Omnivia © {new Date().getFullYear()} - Your personal decision-making assistant
         </div>
       </footer>
     </div>

@@ -1,20 +1,27 @@
+//src/app/auth/signup/page.tsx
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { HelpCircle, Loader2, CheckCircle } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { signUp } from "@/lib/auth"
 
 export default function SignupPage() {
-  const [name, setName] = useState("")
+  const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -26,16 +33,16 @@ export default function SignupPage() {
     setIsLoading(true)
 
     try {
-      await signUp({ name, email, password })
+      await signUp({ fullName, email, password })
       toast({
         title: "Account created",
-        description: "Welcome to ShouldIQ! You can now log in.",
+        description: "You can now log in to your Omnivia account.",
       })
-      router.push("/dashboard")
-    } catch (error) {
+      router.push("/login") // ✅ redirect to login page
+    } catch (error: any) {
       toast({
         title: "Sign up failed",
-        description: "There was an error creating your account. Please try again.",
+        description: error.message || "There was an error creating your account.",
         variant: "destructive",
       })
     } finally {
@@ -51,24 +58,24 @@ export default function SignupPage() {
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
               <HelpCircle className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold">ShouldIQ</span>
+            <span className="text-xl font-bold">Omnivia</span>
           </Link>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Create an account</CardTitle>
-            <CardDescription>Enter your information to get started with ShouldIQ</CardDescription>
+            <CardDescription>Enter your information to get started with Omnivia</CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="fullName">Full Name</Label>
                 <Input
-                  id="name"
+                  id="fullName"
                   placeholder="John Doe"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                   required
                 />
               </div>
@@ -92,7 +99,11 @@ export default function SignupPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
-                <div className="text-xs text-muted-foreground">Password must be at least 8 characters long</div>
+                <div className="text-xs text-muted-foreground">
+                  <li>Must be at least 8 characters long</li>
+                  <li>Must contain a special character</li>
+                  <li>Must at least have one capital letter</li>
+                </div>
               </div>
               <div className="space-y-2 pt-2">
                 <div className="flex items-start gap-2">
@@ -114,7 +125,7 @@ export default function SignupPage() {
               </Button>
               <div className="text-center text-sm">
                 Already have an account?{" "}
-                <Link href="/login" className="text-primary hover:underline">
+                <Link href="/auth/login" className="text-primary hover:underline">
                   Sign in
                 </Link>
               </div>
