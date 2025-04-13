@@ -73,24 +73,8 @@ export default function DashboardPage() {
                 </Link>
               </div>
 
-              {/* Stats */}
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <StatCard title="Interests Investigated" value="12" icon={<BarChart />} subtitle="+2 from last month" />
-                <StatCard title="Decisions Remaining" value="3" icon={<Clock />} subtitle="On free plan (5/mo)" />
-                <StatCard title="Top Category" value="Finance" icon={<Zap />} subtitle="5 decisions this month" />
-                <StatCard title="Subscription" value="Free" icon={<ArrowUpRight />} subtitle={
-                  <Link href="/dashboard/settings" className="text-xs text-primary hover:underline">
-                    Upgrade to Pro
-                  </Link>
-                } />
-              </div>
-
               {/* Activity */}
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                
-
-
-
                 {/* Your Interests */}
                 <Card className="col-span-7">
                   <CardHeader>

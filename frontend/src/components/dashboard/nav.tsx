@@ -20,16 +20,11 @@ export function DashboardNav() {
       href: "/dashboard/chat",
       icon: <MessageSquare className="mr-2 h-4 w-4" />,
     },
-    {
-      title: "History",
-      href: "/dashboard/history",
-      icon: <History className="mr-2 h-4 w-4" />,
-    },
-    {
-      title: "Inbox",
-      href: "/dashboard/inbox",
-      icon: <History className="mr-2 h-4 w-4" />,
-    },
+    // {
+    //   title: "Inbox",
+    //   href: "/dashboard/inbox",
+    //   icon: <History className="mr-2 h-4 w-4" />,
+    // },
     {
       title: "Account",
       href: "/dashboard/account",
