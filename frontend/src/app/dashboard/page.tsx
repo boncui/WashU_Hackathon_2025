@@ -33,13 +33,13 @@ export default function DashboardPage() {
       try {
         const currentUser = await getCurrentUser()
         if (!currentUser) {
-          router.push("/login")
+          router.push("/auth/login")
           return
         }
         setUser(currentUser)
       } catch (err) {
         console.error("Error fetching user:", err)
-        router.push("/login")
+        router.push("/auth/login")
       } finally {
         setIsLoading(false)
       }
