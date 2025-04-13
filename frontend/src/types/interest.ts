@@ -1,4 +1,5 @@
 // types/interest.ts
+
 export type InterestType = "transactional" | "informational"
 
 export interface Article {
@@ -10,16 +11,16 @@ export interface Article {
   image: string
 }
 
-export interface Interest {          // the canonical “Interest” shape
+export interface Interest {
   _id: string
   name: string
   type: InterestType
   update: boolean
-  /**  – If the backend populates articles, you’ll get full objects.
-   *   – If not populated you’ll get string IDs.
-   */
-  articles?: Article[] | string[]
+  articles: Article[]
 }
 
-/* Optional: re‑export with the “IInterest” alias so existing code keeps compiling */
+/**
+ * Alias for consistency with older components
+ * Can be removed later once all components migrate to `Interest`
+ */
 export type IInterest = Interest

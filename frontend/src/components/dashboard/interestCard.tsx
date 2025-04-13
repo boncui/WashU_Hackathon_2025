@@ -1,33 +1,55 @@
-import { RefreshCcw, Inbox } from "lucide-react"
-import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Interest } from "@/types/interest"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { IInterest } from "@/types/interest"
+import Image from "next/image"
+import Link from "next/link"
 
-interface InterestCardProps {
-  interest: Interest
-  onLike?: () => void
-  onRefresh?: () => void
-}
-
-export default function InterestCard({
-  interest,
-  onLike = () => {},
-  onRefresh = () => {},
-}: InterestCardProps) {
+export default function InterestCard({ interest }: { interest: IInterest }) {
   return (
-    <Card className="flex items-center justify-between p-4 hover:shadow-md transition-shadow">
-      <CardHeader className="p-0">
-        <CardTitle className="text-lg font-semibold">{interest.name}</CardTitle>
+    <Card className="w-full mb-6">
+      <CardHeader>
+        <div className="flex justify-between items-center">
+          <div>
+            <CardTitle className="text-xl">{interest.name}</CardTitle>
+            <p className="text-sm text-muted-foreground capitalize">{interest.type}</p>
+            <p className="text-xs mt-1">{interest.update ? "✅ Updates enabled" : "🚫 Updates off"}</p>
+          </div>
+        </div>
       </CardHeader>
 
-      <div className="flex gap-2">
-        <Button variant="ghost" size="icon" onClick={onLike} aria-label="Like and send to inbox">
-          <Inbox className="h-5 w-5" />
-        </Button>
-        <Button variant="ghost" size="icon" onClick={onRefresh} aria-label="Refresh articles">
-          <RefreshCcw className="h-5 w-5" />
-        </Button>
-      </div>
+      <CardContent>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {interest.articles.slice(0, 5).map((article) => (
+            <Card key={article._id} className="bg-muted p-0 overflow-hidden">
+              <Image
+                src={article.image}
+                alt={article.name}
+                width={400}
+                height={200}
+                className="w-full h-32 object-cover"
+              />
+              <div className="p-3 space-y-1">
+                <h4 className="text-sm font-semibold line-clamp-2">{article.name}</h4>
+                <p className="text-xs text-muted-foreground line-clamp-2">{article.summary}</p>
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {article.tags.map((tag, i) => (
+                    <Badge key={i} variant="secondary" className="text-[10px]">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+                <Link
+                  href={article.link}
+                  target="_blank"
+                  className="text-xs text-primary hover:underline inline-block mt-1"
+                >
+                  Read more
+                </Link>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </CardContent>
     </Card>
   )
 }
