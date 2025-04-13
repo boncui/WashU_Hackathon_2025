@@ -15,7 +15,7 @@ interface SignUpCredentials {
   password: string
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5001/api/users"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5001/users"
 const AUTH_TOKEN_KEY = "omnivia-auth-token"
 
 // 🔐 LOGIN

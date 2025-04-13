@@ -1,3 +1,4 @@
+//userRoutes.ts
 import express, { NextFunction, Request, Response, Router } from 'express';
 import { check, validationResult } from 'express-validator';
 import { authenticate, AuthenticatedRequest } from '../middleware/authMiddleware';

@@ -100,7 +100,9 @@ export default function SignupPage() {
                   required
                 />
                 <div className="text-xs text-muted-foreground">
-                  Password must be at least 8 characters long
+                  Must be at least 8 characters long
+                  Must contain a special character
+                  Must at least have one capital letter
                 </div>
               </div>
               <div className="space-y-2 pt-2">
@@ -123,7 +125,7 @@ export default function SignupPage() {
               </Button>
               <div className="text-center text-sm">
                 Already have an account?{" "}
-                <Link href="/login" className="text-primary hover:underline">
+                <Link href="/auth/login" className="text-primary hover:underline">
                   Sign in
                 </Link>
               </div>

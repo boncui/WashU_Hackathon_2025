@@ -30,7 +30,7 @@ export const authenticate = async (req: AuthenticatedRequest, res: Response, nex
         const decoded = jwt.verify(token, secret) as DecodedToken;
 
         // Fetch user details **including role**
-        const user = await User.findById(decoded.id).select("_id fullName email role");
+        const user = await User.findById(decoded.id).select("_id fullName email");
 
         if (!user) {
             return res.status(404).json({ error: "User not found." });
@@ -46,25 +46,6 @@ export const authenticate = async (req: AuthenticatedRequest, res: Response, nex
         res.status(401).json({ error: 'Invalid token.' });
     }
 };
-
-
-// Middleware for Architect Access
-export const authorizeArchitect = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    if (!req.user) {
-        return res.status(401).json({ error: "Unauthorized: No user found" });
-    }
-
-    // console.log("Debugging Role: ", req.user); // Log full user object
-    // console.log("User Role (inside authorizeArchitect):", req.user.role); // Log role (FOR DEBUGGING)
-
-    // Ensure the user has an "Architect" role
-    if (req.user.role !== "Architect") {
-        return res.status(403).json({ error: `Forbidden: You are not an Architect. Your role is: ${req.user.role}` });
-    }
-
-    next();
-};
-
 
 
 
