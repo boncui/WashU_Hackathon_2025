@@ -74,15 +74,10 @@ export default function Home() {
                 </p>
               </div>
               <div className="flex flex-wrap gap-4">
-                <Link href="/signup">
+                <Link href="/auth/signup">
                   <Button className="px-6 py-3 h-auto rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90 transition-opacity">
                     Get started free
                     <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link href="/demo">
-                  <Button variant="outline" className="px-6 py-3 h-auto rounded-full">
-                    Try demo
                   </Button>
                 </Link>
               </div>
@@ -264,7 +259,7 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <Link href="/signup">
+                <Link href="/auth/signup">
                   <Button
                     className={`w-full ${
                       plan.popular
@@ -289,7 +284,7 @@ export default function Home() {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
               Join thousands of users who trust Omnivia for their most important life choices.
             </p>
-            <Link href="/signup">
+            <Link href="/auth/signup">
               <Button className="px-6 py-3 h-auto rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90 transition-opacity">
                 Get started free
                 <ArrowRight className="ml-2 h-4 w-4" />

@@ -44,7 +44,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
               <HelpCircle className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold">ShouldIQ</span>
+            <span className="text-xl font-bold">Omnivia</span>
           </Link>
         </div>
 
