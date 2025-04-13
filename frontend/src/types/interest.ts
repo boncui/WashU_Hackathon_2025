@@ -1,34 +1,25 @@
 // types/interest.ts
-// export interface IInterest {
-//     _id: string
-//     name: string
-//     type: "transactional" | "informational"
-//     update: boolean
-//     articles: string[] // or article objects if populated
-//   }
-  
+export type InterestType = "transactional" | "informational"
 
-  interface Article {
-    _id: string
-    name: string
-    summary: string
-    link: string
-    tags: string[]
-    image: string
-  }
-  
-  interface Interest {
-    _id: string
-    name: string
-    type: "transactional" | "informational"
-    update: boolean
-    articles?: Article[]
-  }
-  
-  export interface User {
-    _id: string
-    fullName: string
-    email: string
-    interests?: Interest[]
-  }
-  
+export interface Article {
+  _id: string
+  name: string
+  summary: string
+  link: string
+  tags: string[]
+  image: string
+}
+
+export interface Interest {          // the canonical “Interest” shape
+  _id: string
+  name: string
+  type: InterestType
+  update: boolean
+  /**  – If the backend populates articles, you’ll get full objects.
+   *   – If not populated you’ll get string IDs.
+   */
+  articles?: Article[] | string[]
+}
+
+/* Optional: re‑export with the “IInterest” alias so existing code keeps compiling */
+export type IInterest = Interest

@@ -1,13 +1,12 @@
-// ✅ components/dashboard/interest-list.tsx
 "use client"
 
 import { useEffect, useState } from "react"
 import InterestCard from "./interestCard"
-import { IInterest } from "@/types/interest"
+import { Interest } from "@/types/interest"
 import { Loader } from "lucide-react"
 
 export function InterestList() {
-  const [interests, setInterests] = useState<IInterest[]>([])
+  const [interests, setInterests] = useState<Interest[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -16,8 +15,8 @@ export function InterestList() {
         const res = await fetch("/api/interests")
         const data = await res.json()
         setInterests(data)
-      } catch (error) {
-        console.error("Error fetching interests:", error)
+      } catch (err) {
+        console.error("Error fetching interests:", err)
       } finally {
         setLoading(false)
       }
