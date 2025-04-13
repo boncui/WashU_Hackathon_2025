@@ -62,6 +62,16 @@ export default function AccountPage() {
 
               {/* ACCOUNT */}
               <TabsContent value="account">
+              <div className="flex flex-col items-center gap-2 mb-6">
+                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-primary">
+                  <img
+                    src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${user._id}`} // or your own avatar URL
+                    alt="Profile picture"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-sm text-muted-foreground">Change profile photo (coming soon)</p>
+              </div>
                 <Card>
                   <CardHeader>
                     <CardTitle>Account Information</CardTitle>
@@ -78,6 +88,23 @@ export default function AccountPage() {
                     </div>
                   </CardContent>
                 </Card>
+                <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle>Social Connections</CardTitle>
+                  <CardDescription>Your network of friends and followed users</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>Friends</Label>
+                    <div className="text-sm text-muted-foreground">No friends yet. Start connecting!</div>
+                  </div>
+                  <div>
+                    <Label>Following</Label>
+                    <div className="text-sm text-muted-foreground">You’re not following anyone.</div>
+                  </div>
+                </CardContent>
+              </Card>
+
               </TabsContent>
 
               <TabsContent value="notifications">

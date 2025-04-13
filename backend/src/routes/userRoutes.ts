@@ -186,4 +186,52 @@ router.delete('/:id', authenticate, async (req: Request, res: Response) => {
     }
 });
 
+// ✅ Follow a user
+router.post('/:id/follow/:targetId', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+    const { id, targetId } = req.params;
+  
+    if (id === targetId) return res.status(400).json({ error: "You can't follow yourself" });
+  
+    const user = await User.findById(id);
+    const target = await User.findById(targetId);
+  
+    if (!user || !target) return res.status(404).json({ error: "User or target not found" });
+  
+    if (!user.following.includes(target._id)) {
+      user.following.push(target._id);
+    }
+  
+    // Check if mutual to become friends
+    if (target.following.includes(user._id)) {
+      if (!user.friends.includes(target._id)) user.friends.push(target._id);
+      if (!target.friends.includes(user._id)) target.friends.push(user._id);
+    }
+  
+    await user.save();
+    await target.save();
+  
+    res.status(200).json({ message: "Followed successfully" });
+  });
+  
+  // ✅ Unfollow a user
+  router.delete('/:id/unfollow/:targetId', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+    const { id, targetId } = req.params;
+  
+    const user = await User.findById(id);
+    const target = await User.findById(targetId);
+  
+    if (!user || !target) return res.status(404).json({ error: "User or target not found" });
+  
+    user.following = user.following.filter(uid => !uid.equals(target._id));
+    target.friends = target.friends.filter(uid => !uid.equals(user._id));
+    user.friends = user.friends.filter(uid => !uid.equals(target._id));
+  
+    await user.save();
+    await target.save();
+  
+    res.status(200).json({ message: "Unfollowed successfully" });
+  });
+  
+
+
 export default router;
