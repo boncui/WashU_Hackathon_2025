@@ -40,7 +40,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
 
   const handleSignOut = async () => {
     await signOut()
-    router.push("/login")
+    router.push("/auth/login")
   }
 
   return (
