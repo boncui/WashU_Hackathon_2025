@@ -1,3 +1,4 @@
+// backend/src/models/Article.ts
 import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IArticle extends Document {
