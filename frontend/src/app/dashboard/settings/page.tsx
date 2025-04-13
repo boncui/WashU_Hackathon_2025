@@ -15,7 +15,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { CheckCircle } from "lucide-react"
 
 export default function SettingsPage() {
-  const [user, setUser] = useState<{ name: string; email: string; id: string } | null>(null)
+  const [user, setUser] = useState<{ fullName: string; email: string; _id: string } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
@@ -43,7 +43,7 @@ export default function SettingsPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <DashboardHeader user={user} />
+      <DashboardHeader user={{ name: user.fullName, email: user.email }} />
       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_1fr] md:gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
         <DashboardNav />
         <main className="flex w-full flex-col overflow-hidden">
@@ -68,7 +68,7 @@ export default function SettingsPage() {
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="name">Name</Label>
-                      <Input id="name" defaultValue={user.name} />
+                      <Input id="name" defaultValue={user.fullName} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
