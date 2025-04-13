@@ -4,6 +4,8 @@ import userRoutes from './routes/userRoutes';
 import connectDB from './config/db';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import {getNews} from './dataCollection/getNews';
+import {getParsedOpenApiSummaryResponse} from './ai/openAi';
 
 
 dotenv.config();
@@ -37,6 +39,29 @@ app.get('/', (req: Request, res: Response) => {
 
 // Mount user routes
 app.use('/users', userRoutes);
+
+app.get('/query/:searchItem', async (req: Request, res: Response) => {
+    const searchItem = req.params.searchItem;
+    const newsResponse = await getNews({query: searchItem, location: 'USA'});
+    let newsLinks = [];
+    const newsResults = newsResponse.news_results;
+    for(let i = 0; i < 5; i++){
+        newsLinks.push(newsResults[i].link);
+    }
+    const wordLimit = 20
+    const instruction = 'You are a helpful financial analyst';
+    let openAiResponses = await newsLinks.reduce(async (previousPromise, link) => {
+        const accumulator = await previousPromise;
+        const openAiPrompt = `Return only a structured JSON with summary, key points (as keyPoints) in ${wordLimit} words or less per summary and point: ${link}`;
+        const openAiResponse = await getParsedOpenApiSummaryResponse({input: openAiPrompt, instructions: instruction});
+        if(openAiResponse){
+            accumulator.push(openAiResponse);
+        }
+        return accumulator;
+    }, Promise.resolve([]));
+    console.log("Structured responses", openAiResponses)
+    res.send('Response received');
+});
 
 
 //Start the server
