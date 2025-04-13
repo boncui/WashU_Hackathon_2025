@@ -186,4 +186,90 @@ router.delete('/:id', authenticate, async (req: Request, res: Response) => {
     }
 });
 
+// ✅ Follow a user
+router.post('/:id/follow/:targetId', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+    const { id, targetId } = req.params;
+  
+    if (id === targetId) return res.status(400).json({ error: "You can't follow yourself" });
+  
+    const user = await User.findById(id);
+    const target = await User.findById(targetId);
+  
+    if (!user || !target) return res.status(404).json({ error: "User or target not found" });
+  
+    if (!user.following.includes(target._id)) {
+      user.following.push(target._id);
+    }
+  
+    // Check if mutual to become friends
+    if (target.following.includes(user._id)) {
+      if (!user.friends.includes(target._id)) user.friends.push(target._id);
+      if (!target.friends.includes(user._id)) target.friends.push(user._id);
+    }
+  
+    await user.save();
+    await target.save();
+  
+    res.status(200).json({ message: "Followed successfully" });
+  });
+  
+  // ✅ Unfollow a user
+  router.delete('/:id/unfollow/:targetId', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+    const { id, targetId } = req.params;
+  
+    const user = await User.findById(id);
+    const target = await User.findById(targetId);
+  
+    if (!user || !target) return res.status(404).json({ error: "User or target not found" });
+  
+    user.following = user.following.filter(uid => !uid.equals(target._id));
+    target.friends = target.friends.filter(uid => !uid.equals(user._id));
+    user.friends = user.friends.filter(uid => !uid.equals(target._id));
+  
+    await user.save();
+    await target.save();
+  
+    res.status(200).json({ message: "Unfollowed successfully" });
+  });
+
+  // ✅ Follow by Email
+  router.post('/:id/follow-by-email', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const currentUserId = req.params.id
+      const { email } = req.body
+  
+      if (!email) return res.status(400).json({ error: "Email is required" })
+  
+      const targetUser = await User.findOne({ email })
+      const currentUser = await User.findById(currentUserId)
+  
+      if (!targetUser || !currentUser) return res.status(404).json({ error: "User not found" })
+  
+      const alreadyFollowing = currentUser.following?.includes(targetUser._id)
+      if (alreadyFollowing) return res.status(400).json({ error: "Already following this user" })
+  
+      // Add to following & followers
+      currentUser.following.push(targetUser._id)
+      targetUser.followers.push(currentUser._id)
+  
+      // Mutual follow = friends
+      const isMutual = targetUser.following.includes(currentUser._id)
+      if (isMutual) {
+        currentUser.friends.push(targetUser._id)
+        targetUser.friends.push(currentUser._id)
+      }
+  
+      await currentUser.save()
+      await targetUser.save()
+  
+      return res.status(200).json({ message: "Followed successfully" })
+    } catch (error) {
+      console.error("❌ Error in follow-by-email:", error)
+      res.status(500).json({ error: "Server error" })
+    }
+  })
+  
+  
+
+
 export default router;

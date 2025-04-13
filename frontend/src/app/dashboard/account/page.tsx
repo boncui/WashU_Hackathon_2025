@@ -14,7 +14,7 @@ import { Switch } from "@/components/ui/switch"
 import { getCurrentUser } from "@/lib/auth"
 import { CheckCircle } from "lucide-react"
 
-export default function SettingsPage() {
+export default function AccountPage() {
   const [user, setUser] = useState<{ fullName: string; email: string; _id: string } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
@@ -49,7 +49,7 @@ export default function SettingsPage() {
         <main className="flex w-full flex-col overflow-hidden">
           <DashboardShell className="mb-14">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+              <h2 className="text-2xl font-bold tracking-tight">Your Account</h2>
               <p className="text-muted-foreground">Manage your account settings and preferences</p>
             </div>
 
@@ -59,31 +59,96 @@ export default function SettingsPage() {
                 <TabsTrigger value="notifications">Notifications</TabsTrigger>
                 <TabsTrigger value="subscription">Subscription</TabsTrigger>
               </TabsList>
+
+              {/* ACCOUNT */}
               <TabsContent value="account">
+                <div className="flex flex-col items-center gap-2 mb-6">
+                  <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-primary">
+                    <img
+                      src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${user._id}`}
+                      alt="Profile picture"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground">Change profile photo (coming soon)</p>
+                </div>
+
                 <Card>
                   <CardHeader>
                     <CardTitle>Account Information</CardTitle>
-                    <CardDescription>Update your account details and preferences</CardDescription>
+                    <CardDescription>View your account details</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Name</Label>
-                      <Input id="name" defaultValue={user.fullName} />
+                    <div className="space-y-1">
+                      <Label>Name</Label>
+                      <p className="text-sm text-muted-foreground">{user.fullName}</p>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" defaultValue={user.email} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Password</Label>
-                      <Input id="password" type="password" defaultValue="••••••••" readOnly />
+                    <div className="space-y-1">
+                      <Label>Email</Label>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
                     </div>
                   </CardContent>
-                  <CardFooter>
-                    <Button>Save changes</Button>
-                  </CardFooter>
+                </Card>
+
+                <Card className="mt-6">
+                  <CardHeader>
+                    <CardTitle>Social Connections</CardTitle>
+                    <CardDescription>Your network of friends and followed users</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {/* Add Friend Form */}
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault()
+                        const form = e.currentTarget
+                        const formData = new FormData(form)
+                        const email = formData.get("friendEmail")?.toString().trim()
+
+                        if (!email || !user) return
+
+                        try {
+                          const res = await fetch(`http://localhost:5001/users/${user._id}/follow-by-email`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ email }),
+                          })
+
+                          const data = await res.json()
+                          if (!res.ok) throw new Error(data.error || "Could not follow user")
+
+                          alert(`✅ You are now following ${email}`)
+                          form.reset()
+                        } catch (err) {
+                          alert(`❌ ${err instanceof Error ? err.message : "Unknown error"}`)
+                        }
+                      }}
+                      className="space-y-2"
+                    >
+                      <Label htmlFor="friendEmail">Add a friend by email</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          id="friendEmail"
+                          name="friendEmail"
+                          type="email"
+                          placeholder="friend@example.com"
+                          required
+                        />
+                        <Button type="submit">Add</Button>
+                      </div>
+                    </form>
+                    <div>
+                      <Label>Friends</Label>
+                      <div className="text-sm text-muted-foreground">No friends yet. Start connecting!</div>
+                    </div>
+                    <div>
+                      <Label>Following</Label>
+                      <div className="text-sm text-muted-foreground">You’re not following anyone.</div>
+                    </div>
+                  </CardContent>
                 </Card>
               </TabsContent>
+
+              {/* NOTIFICATIONs */}
               <TabsContent value="notifications">
                 <Card>
                   <CardHeader>
@@ -91,29 +156,13 @@ export default function SettingsPage() {
                     <CardDescription>Choose how you want to be notified</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {[
-                      {
-                        title: "Email Notifications",
-                        description: "Receive emails about your decisions and account updates",
-                        defaultChecked: true,
-                      },
-                      {
-                        title: "Decision Reminders",
-                        description: "Get reminders about decisions you've made",
-                        defaultChecked: true,
-                      },
-                      {
-                        title: "Marketing Communications",
-                        description: "Receive updates about new features and offers",
-                        defaultChecked: false,
-                      },
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between space-y-0">
+                    {["Email Notifications", "Decision Reminders", "Marketing Communications"].map((title, i) => (
+                      <div key={i} className="flex items-center justify-between">
                         <div className="space-y-0.5">
-                          <Label htmlFor={`notification-${i}`}>{item.title}</Label>
-                          <p className="text-sm text-muted-foreground">{item.description}</p>
+                          <Label>{title}</Label>
+                          <p className="text-sm text-muted-foreground">Notification about {title.toLowerCase()}</p>
                         </div>
-                        <Switch id={`notification-${i}`} defaultChecked={item.defaultChecked} />
+                        <Switch defaultChecked={i !== 2} />
                       </div>
                     ))}
                   </CardContent>
@@ -122,6 +171,7 @@ export default function SettingsPage() {
                   </CardFooter>
                 </Card>
               </TabsContent>
+
               <TabsContent value="subscription">
                 <Card>
                   <CardHeader>
@@ -138,18 +188,12 @@ export default function SettingsPage() {
                         <div className="text-sm font-medium text-green-500">Active</div>
                       </div>
                       <div className="mt-4 space-y-2">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                          <span className="text-sm">5 decisions per month</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                          <span className="text-sm">Basic market data</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                          <span className="text-sm">7-day decision history</span>
-                        </div>
+                        {["5 decisions per month", "Basic market data", "7-day decision history"].map((text, i) => (
+                          <div key={i} className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                            <span className="text-sm">{text}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
 
@@ -162,22 +206,12 @@ export default function SettingsPage() {
                         <Button>Upgrade</Button>
                       </div>
                       <div className="mt-4 space-y-2">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                          <span className="text-sm">Unlimited decisions</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                          <span className="text-sm">Advanced market data</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                          <span className="text-sm">Unlimited decision history</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-500" />
-                          <span className="text-sm">Priority support</span>
-                        </div>
+                        {["Unlimited decisions", "Advanced market data", "Unlimited decision history", "Priority support"].map((text, i) => (
+                          <div key={i} className="flex items-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                            <span className="text-sm">{text}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </CardContent>

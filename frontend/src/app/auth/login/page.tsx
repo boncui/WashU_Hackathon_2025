@@ -1,14 +1,14 @@
 "use client"
 
-import type React from "react"
 import { useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { HelpCircle, Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { signIn } from "@/lib/auth"
 
@@ -24,14 +24,11 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      // Send login request to backend
       const user = await signIn({ email, password })
-
       toast({
         title: "Login successful",
         description: `Welcome back, ${user.fullName}!`,
       })
-
       router.push("/dashboard")
     } catch (error: any) {
       toast({
@@ -47,15 +44,23 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        {/* Logo Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
-              <HelpCircle className="h-5 w-5 text-white" />
+          <Link href="/" className="inline-flex items-center gap-2 justify-center">
+            <div className="relative w-8 h-8 rounded bg-white overflow-hidden">
+              <Image
+                src="/logo.png"
+                alt="Omnia logo"
+                fill
+                className="object-contain invert dark:invert-0"
+                sizes="80%"
+              />
             </div>
-            <span className="text-xl font-bold">Omnivia</span>
+            <span className="text-xl font-bold">Omnia</span>
           </Link>
         </div>
 
+        {/* Login Card */}
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Welcome back</CardTitle>

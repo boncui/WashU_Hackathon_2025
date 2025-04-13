@@ -19,6 +19,8 @@ import {
 import { HelpCircle, Loader2, CheckCircle } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { signUp } from "@/lib/auth"
+import Image from "next/image"
+
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("")
@@ -54,18 +56,24 @@ export default function SignupPage() {
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
-              <HelpCircle className="h-5 w-5 text-white" />
-            </div>
-            <span className="text-xl font-bold">Omnivia</span>
-          </Link>
+          <Link href="/" className="inline-flex items-center gap-2 justify-center">
+              <div className="relative w-8 h-8 rounded bg-white overflow-hidden">
+                <Image
+                  src="/logo.png"
+                  alt="Omnia logo"
+                  fill
+                  className="object-contain invert dark:invert-0"
+                  sizes="80%"
+                />
+              </div>
+              <span className="text-xl font-bold">Omnia</span>
+            </Link>
         </div>
 
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Create an account</CardTitle>
-            <CardDescription>Enter your information to get started with Omnivia</CardDescription>
+            <CardDescription>Enter your information to get started with Omnia</CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">

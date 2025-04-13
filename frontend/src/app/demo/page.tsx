@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { HelpCircle, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { ThemeToggle } from "@/components/theme-toggle"
+import Image from "next/image"
 
 export default function DemoPage() {
   return (
@@ -10,12 +11,18 @@ export default function DemoPage() {
       <header className="border-b sticky top-0 z-50 bg-background">
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
-                <HelpCircle className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-xl font-bold">Omnivia</span>
-            </Link>
+          <Link href="/" className="inline-flex items-center gap-2 justify-center">
+            <div className="relative w-8 h-8 rounded bg-white overflow-hidden">
+              <Image
+                src="/logo.png"
+                alt="Omnia logo"
+                fill
+                className="object-contain invert dark:invert-0"
+                sizes="80%"
+              />
+            </div>
+            <span className="text-xl font-bold">Omnia</span>
+          </Link>
           </div>
 
           <div className="flex items-center gap-4">
