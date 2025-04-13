@@ -6,7 +6,7 @@ import connectDB from './config/db';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import {getNews} from './dataCollection/getNews';
-import {generateOpenAiResponse} from './ai/openAi';
+import {getParsedOpenApiSummaryResponse} from './ai/openAi';
 
 
 dotenv.config();
@@ -46,18 +46,38 @@ app.get('/query/:searchItem', async (req: Request, res: Response) => {
     const newsResponse = await getNews({query: searchItem, location: 'USA'});
     let newsLinks = [];
     const newsResults = newsResponse.news_results;
+    let articleMap = new Map();
+
     for(let i = 0; i < 5; i++){
+        articleMap.set(newsResults[i].link, newsResults[i]);
         newsLinks.push(newsResults[i].link);
     }
+
+    console.log("news results", newsResults);
     const wordLimit = 20
     const instruction = 'You are a helpful consultant';
-    let openAiResponse = await generateOpenAiResponse({
-        input: `Return a structured JSON array containing one consolidated recommendation along with one or more reasoning(s) based on the
+    let openAiResponse = await getParsedOpenApiSummaryResponse({
+        input: `Return a structured JSON object EXACTLY in this format:
+                    {
+                      "recommendation": "A single string with your consolidated recommendation",
+                      "reasoning": ["An array of strings with reasons for the recommendation"],
+                      "articles": [
+                        {
+                        /*  "link": "provided link",*/
+                          "title": "article title",
+                          "summary": "Summary of article",
+                          "key_points": ["Array of key points"]
+                        }
+                      ]
+                    }
+        based on the
         the following links, using ${wordLimit} words or less per summary and point:
         ${newsLinks.join('\n')}`,
         instructions: instruction
     });
-    console.log("Open ai response", openAiResponse);
+    console.log(openAiResponse);
+
+
     res.send('Response received');
 });
 

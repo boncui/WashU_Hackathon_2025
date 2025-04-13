@@ -8,14 +8,24 @@ type GenerateResponseParams = {
   apiKey?: string;
 };
 
+
 // Define schema for a single article summary
 const ArticleSummarySchema = z.object({
+  title: z.string(),
   summary: z.string(),
-  keyPoints: z.array(z.string())
+  key_points: z.array(z.string())
 });
 
 // Define schema for an array of article summaries
 const ArticleSummariesSchema = z.array(ArticleSummarySchema);
+
+const ArticleSchema = z.object({
+  recommendation: z.string(),
+  reasoning: z.array(z.string()),
+  articles: z.array(ArticleSummarySchema)
+})
+
+type Article = z.infer<typeof ArticleSchema>;
 
 type ArticleSummary = z.infer<typeof ArticleSummarySchema>;
 type ArticleSummaries = z.infer<typeof ArticleSummariesSchema>;
@@ -47,10 +57,10 @@ export async function generateOpenAiResponse({
 export async function getParsedOpenApiSummaryResponse({
     input,
     instructions
-}: GenerateResponseParams) : Promise<ArticleSummaries | null> {
+}: GenerateResponseParams) : Promise<Article | null> {
     try {
         let responseText = await generateOpenAiResponse({input: input, instructions: instructions});
-        const result = responseText.substring(responseText.indexOf('['), responseText.lastIndexOf(']') + 1);
+        const result = responseText.substring(responseText.indexOf('{'), responseText.lastIndexOf('}') + 1);
         console.log("res", result);
         if(!result){
             return null;
@@ -58,7 +68,7 @@ export async function getParsedOpenApiSummaryResponse({
 
         const parsedResponse = JSON.parse(result);
         // Validate the entire array of summaries
-        const validatedData = ArticleSummariesSchema.parse(parsedResponse);
+        const validatedData = ArticleSchema.parse(parsedResponse);
         return validatedData;
    } catch(error){
         if (error instanceof z.ZodError) {
