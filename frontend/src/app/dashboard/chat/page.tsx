@@ -9,7 +9,7 @@ import { StructuredChat } from "@/components/structured-chat"
 import { getCurrentUser } from "@/lib/auth"
 
 export default function ChatPage() {
-  const [user, setUser] = useState<{ name: string; email: string; id: string } | null>(null)
+  const [user, setUser] = useState<{ fullName: string; email: string; _id: string } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
@@ -37,7 +37,7 @@ export default function ChatPage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <DashboardHeader user={user} />
+      <DashboardHeader user={{ name: user.fullName, email: user.email }} />
       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_1fr] md:gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
         <DashboardNav />
         <main className="flex w-full flex-col overflow-hidden">
