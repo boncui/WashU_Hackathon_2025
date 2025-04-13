@@ -1,5 +1,6 @@
 // backend/src/models/Interests.ts
 import mongoose, { Schema, Document } from 'mongoose'
+import "./Article";  
 
 export enum InterestType {
   Transactional = 'transactional',
@@ -30,4 +31,7 @@ const InterestSchema: Schema<IInterests> = new Schema({
 }, { timestamps: true })
 
 
+// ✅ Rename model to match reference string used in .populate('interests')
 export default mongoose.model<IInterests>('Interest', InterestSchema)
+
+

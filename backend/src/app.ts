@@ -12,9 +12,6 @@ console.log('MONGO_URI:', process.env.MONGO_URI);
 
 //Database connection
 connectDB();
-mongoose.connect(process.env.MONGO_URI!)
-    .then(() => console.log('MongoDB Connected'))
-    .catch((err: unknown) => console.error('MongoDB connection error:', (err as Error).message));
 
 const app = express();
 const PORT = process.env.PORT || 5000; //PORT 5000 is being used by Mac

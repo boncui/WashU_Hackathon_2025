@@ -1,5 +1,6 @@
 // ✅ backend/src/models/User.ts
 import mongoose, { Schema, Document } from 'mongoose';
+import './Interests';
 
 export interface IUser extends Document {
   _id: mongoose.Types.ObjectId;
