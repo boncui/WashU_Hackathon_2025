@@ -2,6 +2,7 @@
 import express, { Request, Response } from 'express'; //express is used to create the server
 import dotenv from 'dotenv'; //dotenv is used for managing enviorment variables
 import userRoutes from './routes/userRoutes';
+import interestsRoutes from './routes/interestsRoutes';
 import connectDB from './config/db';
 import mongoose from 'mongoose';
 import cors from 'cors';
@@ -40,6 +41,7 @@ app.get('/', (req: Request, res: Response) => {
 
 // Mount user routes
 app.use('/users', userRoutes);
+app.use('/interests', interestsRoutes);
 
 app.get('/query/:searchItem', async (req: Request, res: Response) => {
     const searchItem = req.params.searchItem;
