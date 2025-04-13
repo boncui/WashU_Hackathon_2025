@@ -15,13 +15,13 @@ export default function Home() {
             <div className="relative w-8 h-8 rounded bg-white overflow-hidden">
             <Image
               src="/logo.png"
-              alt="Omnivia logo"
+              alt="Omnia logo"
               fill
               className="object-contain invert dark:invert-0"
               sizes="80%"
             />
             </div>
-            <span className="text-xl font-bold">Omnivia</span>
+            <span className="text-xl font-bold">Omnia</span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -76,7 +76,7 @@ export default function Home() {
                   </span>
                 </h1>
                 <p className="text-xl text-muted-foreground max-w-xl">
-                Omnivia analyzes your goals and real-time market data to help you make better decisions about major
+                Omnia analyzes your goals and real-time market data to help you make better decisions about major
                   life choices.
                 </p>
               </div>
@@ -110,7 +110,7 @@ export default function Home() {
       <section id="features" className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Why choose Omnivia?</h2>
+            <h2 className="text-3xl font-bold mb-4">Why choose Omnia?</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Our AI-powered platform helps you make better decisions by analyzing multiple factors and providing
               data-backed recommendations.
@@ -150,7 +150,7 @@ export default function Home() {
       <section id="how-it-works" className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">How Omnivia Works</h2>
+            <h2 className="text-3xl font-bold mb-4">How Omnia Works</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Our advanced AI system breaks down complex decisions into manageable insights.
             </p>
@@ -205,7 +205,7 @@ export default function Home() {
               {
                 name: "Free",
                 price: "$0",
-                description: "Perfect for trying out Omnivia",
+                description: "Perfect for trying out Omnia",
                 features: ["5 decisions per month", "Basic market data", "7-day decision history"],
                 cta: "Get Started",
                 popular: false,
@@ -289,7 +289,7 @@ export default function Home() {
           <div className="bg-gradient-to-r from-purple-500/10 to-cyan-500/10 rounded-2xl p-8 md:p-12 text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to make better decisions?</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-              Join thousands of users who trust Omnivia for their most important life choices.
+              Join thousands of users who trust Omnia for their most important life choices.
             </p>
             <Link href="/auth/signup">
               <Button className="px-6 py-3 h-auto rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90 transition-opacity">
@@ -310,7 +310,7 @@ export default function Home() {
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
                   <HelpCircle className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-xl font-bold">Omnivia</span>
+                <span className="text-xl font-bold">Omnia</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Your AI-powered decision assistant for life's biggest choices.
@@ -378,7 +378,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t mt-12 pt-6 text-center text-sm text-muted-foreground">
-          Omnivia © {new Date().getFullYear()} - Your personal decision-making assistant
+          Omnia © {new Date().getFullYear()} - Your personal decision-making assistant
           </div>
         </div>
       </footer>
