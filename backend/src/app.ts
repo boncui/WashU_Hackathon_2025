@@ -50,16 +50,13 @@ app.get('/query/:searchItem', async (req: Request, res: Response) => {
     }
     const wordLimit = 20
     const instruction = 'You are a helpful financial analyst';
-    let openAiResponses = await newsLinks.reduce(async (previousPromise, link) => {
-        const accumulator = await previousPromise;
-        const openAiPrompt = `Return only a structured JSON with summary, key points (as keyPoints) in ${wordLimit} words or less per summary and point: ${link}`;
-        const openAiResponse = await getParsedOpenApiSummaryResponse({input: openAiPrompt, instructions: instruction});
-        if(openAiResponse){
-            accumulator.push(openAiResponse);
-        }
-        return accumulator;
-    }, Promise.resolve([]));
-    console.log("Structured responses", openAiResponses)
+    let openAiResponse = await getParsedOpenApiSummaryResponse({
+        input: `Return a structured JSON array where each element contains a summary and key points (as keyPoints)
+        for each of the following links, using ${wordLimit} words or less per summary and point:
+        ${newsLinks.join('\n')}`,
+        instructions: instruction
+    });
+    console.log("Open ai response", openAiResponse);
     res.send('Response received');
 });
 
