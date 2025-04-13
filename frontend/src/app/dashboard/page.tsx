@@ -66,7 +66,7 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold tracking-tight">Welcome back, {user.fullName}</h2>
-                  <p className="text-muted-foreground">Enjoy your personalized interests board!</p>
+                  <p className="text-muted-foreground">Enjoy your personalized news feed!</p>
                 </div>
                 <Link href="/dashboard/chat">
                   <Button>Add Interest</Button>
