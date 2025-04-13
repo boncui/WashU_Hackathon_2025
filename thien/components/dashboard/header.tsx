@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { HelpCircle, Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -23,11 +24,17 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ user }: DashboardHeaderProps) {
+  const router = useRouter()
   const initials = user.name
     .split(" ")
     .map((n) => n[0])
     .join("")
     .toUpperCase()
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push("/login")
+  }
 
   return (
     <header className="border-b sticky top-0 z-50 bg-background">
@@ -72,9 +79,9 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer"
-                onSelect={async (event) => {
+                onSelect={(event) => {
                   event.preventDefault()
-                  await signOut()
+                  handleSignOut()
                 }}
               >
                 Log out
