@@ -26,7 +26,7 @@ export default function AccountPage() {
       setIsLoading(false)
 
       if (!currentUser) {
-        router.push("/login")
+        router.push("/auth/login")
       }
     }
 

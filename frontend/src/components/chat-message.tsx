@@ -19,7 +19,7 @@ export function ChatMessage({ role, content }: ChatMessageProps) {
         </AvatarFallback>
       </Avatar>
       <div className={`space-y-1 max-w-[80%] ${role === "assistant" ? "" : "text-right"}`}>
-        <div className="text-xs text-muted-foreground">{role === "assistant" ? "ShouldIQ" : "You"}</div>
+        <div className="text-xs text-muted-foreground">{role === "assistant" ? "Omnia" : "You"}</div>
         <div
           className={`text-sm rounded-2xl px-4 py-2 inline-block ${
             role === "assistant" ? "bg-muted text-foreground" : "bg-primary text-primary-foreground"

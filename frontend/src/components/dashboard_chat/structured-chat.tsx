@@ -436,10 +436,10 @@ export function StructuredChat() {
     }
 
     return (
-      <div className="flex flex-col h-[600px] rounded-lg overflow-hidden border">
+      <div className="flex flex-col w-full min-h-[600px] rounded-lg overflow-hidden border">
         {/* Header */}
         <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="font-medium">Ask ShouldIQ</h2>
+          <h2 className="font-medium">Add Interest</h2>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
             <TabsList>
               <TabsTrigger value="chat">Chat</TabsTrigger>

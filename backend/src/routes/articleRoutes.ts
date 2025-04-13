@@ -1,7 +1,7 @@
 // ✅ routes/articleRoutes.ts
 import express, { Request, Response } from 'express'
 import Article, { IArticle } from '../models/Article'
-import Interest from '../models/Interests'
+import Interest from '../models/Interests' // ✅ singular, not Interests
 import { authenticate, AuthenticatedRequest } from '../middleware/authMiddleware'
 
 const router = express.Router()

@@ -5,8 +5,7 @@ import { authenticate, AuthenticatedRequest } from '../middleware/authMiddleware
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import User from '../models/User';
-import Interests from '../models/Interests';
-import Article from '../models/Article';
+import Interest from '../models/Interests' // ✅ Import + registers + usable reference
 import dotenv from 'dotenv';
 dotenv.config();
 

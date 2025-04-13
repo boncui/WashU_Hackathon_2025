@@ -1,4 +1,4 @@
-import { StructuredChat } from "@/components/structured-chat"
+import { StructuredChat } from "@/components/dashboard_chat/structured-chat"
 import { Button } from "@/components/ui/button"
 import { HelpCircle, ArrowLeft } from "lucide-react"
 import Link from "next/link"
