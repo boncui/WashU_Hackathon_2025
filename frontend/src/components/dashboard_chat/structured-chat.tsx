@@ -79,72 +79,48 @@ export function StructuredChat() {
     setIsLoading(true)
 
     const token = typeof window !== "undefined" ? localStorage.getItem(AUTH_TOKEN_KEY) : null
-    console.log("token", token);
 
     // Construct the full query
     const fullQuery = `Should I ${decision}${location ? ` in ${location}` : ""}${
       timeframe ? ` in the ${timeframe}` : ""
     }${goal ? ` to ${goal}` : ""}?`
 
-    // Add user message to chat
+    // Add user message to chat (just to track that submission happened)
     setMessages((prev) => [...prev, { role: "user", content: fullQuery }])
 
     try {
-      // Fetch relevant news
+      // Submit the interest
       if (user) {
         const res = await fetch(`${API_BASE_URL}/${user._id}/interests`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-              body: JSON.stringify({
-                  name: goal,
-                  type: interestType,
-                  update: false
-              }),
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({
+            name: goal || decision, // Use goal if available, otherwise use decision
+            type: interestType,
+            update: true // Set to true to indicate we want updates
+          }),
         })
+
+        if (!res.ok) {
+          throw new Error(`Failed to create interest: ${res.status}`)
+        }
+
+        // Add assistant confirmation message
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: "Interest added successfully!"
+          },
+        ])
       }
-
-      const news = await fetchNewsForQuery(decision, location)
-      setNewsResults(news)
-
-      // Add a message about the news research
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "I'm researching current news and market data relevant to your decision...",
-        },
-      ])
-
-      // Process the structured query
-      const report = await processStructuredQuery({
-        decision,
-        location,
-        timeframe,
-        goal,
-        newsContext: news,
-      })
-
-      // Add assistant message
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: `I've analyzed your question: "${fullQuery}". Here's my recommendation based on your goals, location factors, timeframe, and current market conditions.`,
-        },
-      ])
-
-      // Set the report data
-      setCurrentReport(report)
-
-      // Reset form for next query
-      resetForm()
     } catch (error) {
-      console.error("Error processing query:", error)
+      console.error("Error processing request:", error)
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: "I'm sorry, I encountered an error while processing your request. Please try again.",
+          content: "Sorry, there was an error adding your interest. Please try again.",
         },
       ])
     } finally {
@@ -430,6 +406,7 @@ export function StructuredChat() {
   }
 
   // Render function with all conditional rendering
+  // Inside the renderContent function, replace the existing chat content with this simpler confirmation message
   const renderContent = () => {
     if (isLoading) {
       return <div className="flex min-h-screen items-center justify-center">Loading...</div>
@@ -440,108 +417,71 @@ export function StructuredChat() {
         {/* Header */}
         <div className="p-4 border-b flex items-center justify-between">
           <h2 className="font-medium">Add Interest</h2>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
-            <TabsList>
-              <TabsTrigger value="chat">Chat</TabsTrigger>
-              <TabsTrigger value="history">History</TabsTrigger>
-            </TabsList>
-          </Tabs>
         </div>
 
         {/* Content area */}
         <div className="flex-1 overflow-hidden">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
-            <TabsContent
-              value="chat"
-              className="flex-1 flex flex-col h-full m-0 p-0 data-[state=active]:flex data-[state=inactive]:hidden"
-            >
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                {messages.length > 0 ? (
-                  <>
-                    {messages.map((message, index) => (
-                      <ChatMessage key={index} role={message.role} content={message.content} />
-                    ))}
+          {messages.length > 0 ? (
+            // Show confirmation message after form submission
+            <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Interest Added Successfully!</h3>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                We've received your interest in "{goal}" and will gather relevant news and insights for you.
+                Check your feed shortly to see personalized updates.
+              </p>
+              <Button
+                onClick={resetForm}
+                className="bg-primary hover:bg-primary/90 text-white"
+              >
+                Add Another Interest
+              </Button>
+            </div>
+          ) : (
+            // Show the form when no submission has been made yet
+            <div className="h-full flex flex-col p-4">
+              {renderQuerySummary()}
 
-                    {newsResults.length > 0 && !currentReport && (
-                      <Card className="bg-muted/30 border-primary/10">
-                        <CardContent className="p-4 space-y-2">
-                          <h4 className="text-sm font-medium">Relevant News & Market Data</h4>
-                          <ul className="space-y-1 text-sm text-muted-foreground">
-                            {newsResults.map((news, i) => (
-                              <li key={i} className="flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span>
-                                <span>{news}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </CardContent>
-                      </Card>
-                    )}
-
-                    {currentReport && <DecisionReport report={currentReport} />}
-
-                    {!isLoading && !currentReport && messages.length > 0 && (
-                      <div className="pt-4">
-                        <Button onClick={resetForm} variant="outline" className="w-full">
-                          Ask another question
-                        </Button>
-                      </div>
-                    )}
-
-                    <div ref={messagesEndRef} />
-                  </>
-                ) : (
-                  <div className="h-full flex flex-col p-4">
-                    {renderQuerySummary()}
-
-                    {formStep < formSteps.length ? (
-                      renderFormStep()
-                    ) : (
-                      <div className="h-full flex flex-col justify-center items-center text-center p-4">
-                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                          <Sparkles className="h-6 w-6 text-primary" />
-                        </div>
-                        <h3 className="text-lg font-medium mb-2">Ask me about timing your decisions</h3>
-                        <p className="text-muted-foreground mb-6 text-sm">
-                          I'll analyze your goals and current market conditions to help you decide.
-                        </p>
-                        <div className="grid grid-cols-1 gap-2 w-full max-w-xs">
-                          {exampleQueries.map((query, index) => (
-                            <Button
-                              key={index}
-                              variant="outline"
-                              className="justify-start h-auto py-2 px-3 text-left text-sm"
-                              onClick={() => {
-                                setDecision(query.decision)
-                                setLocation(query.location)
-                                setTimeframe(query.timeframe)
-                                setGoal(query.goal)
-                                setFormStep(formSteps.length)
-                              }}
-                            >
-                              Should I {query.decision}
-                              {query.location ? ` in ${query.location}` : ""}
-                              {query.timeframe ? ` in the ${query.timeframe}` : ""}
-                              {query.goal ? ` to ${query.goal}` : ""}?
-                            </Button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+              {formStep < formSteps.length ? (
+                renderFormStep()
+              ) : (
+                <div className="h-full flex flex-col justify-center items-center text-center p-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                    <Sparkles className="h-6 w-6 text-primary" />
                   </div>
-                )}
-              </div>
-            </TabsContent>
-
-            <TabsContent
-              value="history"
-              className="h-full flex-1 p-4 m-0 data-[state=active]:flex data-[state=inactive]:hidden"
-            >
-              <div className="h-full flex flex-col justify-center items-center text-center">
-                <p className="text-muted-foreground">Your decision history will appear here</p>
-              </div>
-            </TabsContent>
-          </Tabs>
+                  <h3 className="text-lg font-medium mb-2">What are you interested in?</h3>
+                  <p className="text-muted-foreground mb-6 text-sm">
+                    Tell us about your interests so we can provide relevant news and insights.
+                  </p>
+                  <div className="grid grid-cols-1 gap-2 w-full max-w-xs">
+                    {exampleQueries.map((query, index) => (
+                      <Button
+                        key={index}
+                        variant="outline"
+                        className="justify-start h-auto py-2 px-3 text-left text-sm"
+                        onClick={() => {
+                          setDecision(query.decision)
+                          setLocation(query.location)
+                          setTimeframe(query.timeframe)
+                          setGoal(query.goal)
+                          setFormStep(formSteps.length)
+                        }}
+                      >
+                        Should I {query.decision}
+                        {query.location ? ` in ${query.location}` : ""}
+                        {query.timeframe ? ` in the ${query.timeframe}` : ""}
+                        {query.goal ? ` to ${query.goal}` : ""}?
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     )
