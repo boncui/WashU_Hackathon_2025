@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -25,16 +24,19 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
-      await signIn({ email, password })
+      // Send login request to backend
+      const user = await signIn({ email, password })
+
       toast({
         title: "Login successful",
-        description: "Welcome back to Omnivia!",
+        description: `Welcome back, ${user.fullName}!`,
       })
+
       router.push("/dashboard")
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Login failed",
-        description: "Please check your credentials and try again.",
+        description: error.message || "Please check your credentials and try again.",
         variant: "destructive",
       })
     } finally {
@@ -93,7 +95,7 @@ export default function LoginPage() {
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Sign in"}
               </Button>
               <div className="text-center text-sm">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Link href="/signup" className="text-primary hover:underline">
                   Sign up
                 </Link>
