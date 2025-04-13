@@ -1,3 +1,4 @@
+//backend/src/app.ts
 import express, { Request, Response } from 'express'; //express is used to create the server
 import dotenv from 'dotenv'; //dotenv is used for managing enviorment variables
 import userRoutes from './routes/userRoutes';

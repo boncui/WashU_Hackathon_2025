@@ -1,24 +1,26 @@
-# WashU_Hackathon_2025
-Personalized Updater/ Newsletter
+# 🚀 WashU_Hackathon_2025  
+**Personalized Updater / Newsletter**
 
-IN CASE SHIT DOESNT WORK
-please run:
+---
+
+## ⚠️ In Case Things Break  
+If you run into installation or runtime issues, try this first:
+
+```bash
 rm -rf node_modules package-lock.json
-and then follow the instructions below for both frontend and backend
+```
 
-Backend Documentation
+## 📦 Backend Setup
+cd backend
+npm install
+npm run dev
 
-1.) npm install
-2.) npm run dev
+## 🎨 Frontend Setup
+cd frontend
+npm install --legacy-peer-deps
+npm run dev
 
-
-frontend Documenation
-1.) npm install
-2.) npm run dev
-
-
-Thien Documentation
-1.)rm -rf node_modules package-lock.json
-2.) npm install --legacy-peer-deps
-3.) npm run dev
+## TEST USERS
+supertest@gmail.com
+Supertest1!
 
