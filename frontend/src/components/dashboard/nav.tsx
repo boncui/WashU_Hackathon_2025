@@ -16,7 +16,7 @@ export function DashboardNav() {
       icon: <LayoutDashboard className="mr-2 h-4 w-4" />,
     },
     {
-      title: "New Decision",
+      title: "New Interest",
       href: "/dashboard/chat",
       icon: <MessageSquare className="mr-2 h-4 w-4" />,
     },
@@ -26,8 +26,13 @@ export function DashboardNav() {
       icon: <History className="mr-2 h-4 w-4" />,
     },
     {
-      title: "Settings",
-      href: "/dashboard/settings",
+      title: "Inbox",
+      href: "/dashboard/inbox",
+      icon: <History className="mr-2 h-4 w-4" />,
+    },
+    {
+      title: "Account",
+      href: "/dashboard/account",
       icon: <Settings className="mr-2 h-4 w-4" />,
     },
   ]

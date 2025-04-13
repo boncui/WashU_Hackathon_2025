@@ -14,7 +14,7 @@ import { Switch } from "@/components/ui/switch"
 import { getCurrentUser } from "@/lib/auth"
 import { CheckCircle } from "lucide-react"
 
-export default function SettingsPage() {
+export default function AccountPage() {
   const [user, setUser] = useState<{ fullName: string; email: string; _id: string } | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
@@ -49,7 +49,7 @@ export default function SettingsPage() {
         <main className="flex w-full flex-col overflow-hidden">
           <DashboardShell className="mb-14">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+              <h2 className="text-2xl font-bold tracking-tight">Your Account</h2>
               <p className="text-muted-foreground">Manage your account settings and preferences</p>
             </div>
 
@@ -59,31 +59,27 @@ export default function SettingsPage() {
                 <TabsTrigger value="notifications">Notifications</TabsTrigger>
                 <TabsTrigger value="subscription">Subscription</TabsTrigger>
               </TabsList>
+
+              {/* ACCOUNT */}
               <TabsContent value="account">
                 <Card>
                   <CardHeader>
                     <CardTitle>Account Information</CardTitle>
-                    <CardDescription>Update your account details and preferences</CardDescription>
+                    <CardDescription>View your account details</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Name</Label>
-                      <Input id="name" defaultValue={user.fullName} />
+                    <div className="space-y-1">
+                      <Label>Name</Label>
+                      <p className="text-sm text-muted-foreground">{user.fullName}</p>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" defaultValue={user.email} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="password">Password</Label>
-                      <Input id="password" type="password" defaultValue="••••••••" readOnly />
+                    <div className="space-y-1">
+                      <Label>Email</Label>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
                     </div>
                   </CardContent>
-                  <CardFooter>
-                    <Button>Save changes</Button>
-                  </CardFooter>
                 </Card>
               </TabsContent>
+
               <TabsContent value="notifications">
                 <Card>
                   <CardHeader>
