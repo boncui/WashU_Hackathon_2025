@@ -59,7 +59,7 @@ export default function DashboardPage() {
     return (
       <div className="flex min-h-screen flex-col">
         <DashboardHeader user={{ name: user.fullName, email: user.email }} />
-        <div className="container flex-1 items-start md:grid md:grid-cols-[220px_1fr] md:gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
+        <div className="container flex-1 items-start md:grid md:grid-cols-[180px_1fr] md:gap-6 lg:grid-cols-[180px_1fr] lg:gap-10">
           <DashboardNav />
           <main className="flex w-full flex-col overflow-hidden">
             <DashboardShell className="mb-14">
@@ -92,7 +92,7 @@ export default function DashboardPage() {
 
 
                 {/* Your Interests */}
-                <Card className="col-span-7">
+                <Card className="col-span-12">
                   <CardHeader>
                     <CardTitle>Your Interests</CardTitle>
                     <CardDescription>Categories you follow to stay informed</CardDescription>
