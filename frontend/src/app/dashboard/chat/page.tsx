@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { DashboardShell } from "@/components/dashboard/shell"
 import { DashboardNav } from "@/components/dashboard/nav"
-import { StructuredChat } from "@/components/structured-chat"
+import { StructuredChat } from "@/components/dashboard_chat/structured-chat"
 import { getCurrentUser } from "@/lib/auth"
 
 export default function ChatPage() {
@@ -42,11 +42,9 @@ export default function ChatPage() {
         <DashboardNav />
         <main className="flex w-full flex-col overflow-hidden">
           <DashboardShell className="mb-14">
-            <div className="flex flex-col items-center justify-center max-w-3xl mx-auto">
-              <div className="w-full">
-                <StructuredChat />
-              </div>
-            </div>
+          <div className="w-full">
+            <StructuredChat />
+          </div>
           </DashboardShell>
         </main>
       </div>
