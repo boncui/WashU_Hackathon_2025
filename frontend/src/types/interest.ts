@@ -2,7 +2,7 @@
 export interface IInterest {
     _id: string
     name: string
-    type: "Type1" | "Type2"
+    type: "transactional" | "informational"
     update: boolean
     articles: string[] // or article objects if populated
   }
