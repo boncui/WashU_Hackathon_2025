@@ -5,25 +5,43 @@ import { useRouter } from "next/navigation"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { DashboardShell } from "@/components/dashboard/shell"
 import { DashboardNav } from "@/components/dashboard/nav"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getCurrentUser } from "@/lib/auth"
 import { BarChart, Clock, Zap, ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 
+interface User {
+  _id: string
+  fullName: string
+  email: string
+}
+
 export default function DashboardPage() {
-  const [user, setUser] = useState<{ name: string; email: string; id: string } | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
     async function loadUser() {
-      const currentUser = await getCurrentUser()
-      setUser(currentUser)
-      setIsLoading(false)
-
-      if (!currentUser) {
+      try {
+        const currentUser = await getCurrentUser()
+        if (!currentUser) {
+          router.push("/login")
+          return
+        }
+        setUser(currentUser)
+      } catch (err) {
+        console.error("Error fetching user:", err)
         router.push("/login")
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -35,19 +53,19 @@ export default function DashboardPage() {
   }
 
   if (!user) {
-    return null // Router will redirect
+    return null
   }
 
   return (
     <div className="flex min-h-screen flex-col">
-      <DashboardHeader user={user} />
+      <DashboardHeader user={{ name: user.fullName, email: user.email }} />
       <div className="container flex-1 items-start md:grid md:grid-cols-[220px_1fr] md:gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
         <DashboardNav />
         <main className="flex w-full flex-col overflow-hidden">
           <DashboardShell className="mb-14">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold tracking-tight">Welcome back, {user.name}</h2>
+                <h2 className="text-2xl font-bold tracking-tight">Welcome back, {user.fullName}</h2>
                 <p className="text-muted-foreground">Here's an overview of your decision-making activity</p>
               </div>
               <Link href="/dashboard/chat">
@@ -55,51 +73,19 @@ export default function DashboardPage() {
               </Link>
             </div>
 
+            {/* Stats */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Decisions Made</CardTitle>
-                  <BarChart className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">12</div>
-                  <p className="text-xs text-muted-foreground">+2 from last month</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Decisions Remaining</CardTitle>
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">3</div>
-                  <p className="text-xs text-muted-foreground">On free plan (5/mo)</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Top Category</CardTitle>
-                  <Zap className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">Finance</div>
-                  <p className="text-xs text-muted-foreground">5 decisions this month</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Subscription</CardTitle>
-                  <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">Free</div>
-                  <Link href="/dashboard/settings" className="text-xs text-primary hover:underline">
-                    Upgrade to Pro
-                  </Link>
-                </CardContent>
-              </Card>
+              <StatCard title="Decisions Made" value="12" icon={<BarChart />} subtitle="+2 from last month" />
+              <StatCard title="Decisions Remaining" value="3" icon={<Clock />} subtitle="On free plan (5/mo)" />
+              <StatCard title="Top Category" value="Finance" icon={<Zap />} subtitle="5 decisions this month" />
+              <StatCard title="Subscription" value="Free" icon={<ArrowUpRight />} subtitle={
+                <Link href="/dashboard/settings" className="text-xs text-primary hover:underline">
+                  Upgrade to Pro
+                </Link>
+              } />
             </div>
 
+            {/* Activity */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
               <Card className="col-span-4">
                 <CardHeader>
@@ -187,5 +173,31 @@ export default function DashboardPage() {
         </main>
       </div>
     </div>
+  )
+}
+
+// 🔧 Helper component for stat blocks
+function StatCard({
+  title,
+  value,
+  icon,
+  subtitle,
+}: {
+  title: string
+  value: string
+  icon: React.ReactNode
+  subtitle: React.ReactNode
+}) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <div className="h-4 w-4 text-muted-foreground">{icon}</div>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{value}</div>
+        <p className="text-xs text-muted-foreground">{subtitle}</p>
+      </CardContent>
+    </Card>
   )
 }

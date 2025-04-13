@@ -25,11 +25,18 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ user }: DashboardHeaderProps) {
   const router = useRouter()
+
+  // 🧠 Developer-friendly validation
+  if (!user?.name || !user?.email) {
+    throw new Error("DashboardHeader: Missing required `user` prop.")
+  }
+
+  // ✅ Safe fallback for initials
   const initials = user.name
     .split(" ")
     .map((n) => n[0])
     .join("")
-    .toUpperCase()
+    .toUpperCase() || "?"
 
   const handleSignOut = async () => {
     await signOut()
@@ -39,6 +46,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
   return (
     <header className="border-b sticky top-0 z-50 bg-background">
       <div className="container flex h-16 items-center justify-between px-4">
+        {/* Logo */}
         <div className="flex items-center gap-2">
           <Link href="/dashboard" className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
@@ -48,12 +56,15 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
           </Link>
         </div>
 
+        {/* Right Controls */}
         <div className="flex items-center gap-4">
           <ThemeToggle />
+
           <Button variant="outline" size="icon">
             <Bell className="h-4 w-4" />
             <span className="sr-only">Notifications</span>
           </Button>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
