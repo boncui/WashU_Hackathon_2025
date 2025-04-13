@@ -17,6 +17,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { BarChart, Clock, Zap, ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 import { User } from "@/types/user"
+import Image from "next/image"
 
 
 export default function DashboardPage() {

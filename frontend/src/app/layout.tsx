@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "Omnivia - Make better decisions with AI-powered insights",
+  title: "Omnia - Make better decisions with AI-powered insights",
   description: "Your personalized, goal-aware decision-making assistant",
   generator: "v0.dev",
 }

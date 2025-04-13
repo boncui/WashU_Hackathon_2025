@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { signOut } from "@/lib/auth"
+import Image from "next/image"
 
 interface DashboardHeaderProps {
   user: {
@@ -48,11 +49,17 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
-              <HelpCircle className="h-5 w-5 text-white" />
+        <Link href="/" className="inline-flex items-center gap-2 justify-center">
+            <div className="relative w-8 h-8 rounded bg-white overflow-hidden">
+              <Image
+                src="/logo.png"
+                alt="Omnia logo"
+                fill
+                className="object-contain invert dark:invert-0"
+                sizes="80%"
+              />
             </div>
-            <span className="text-xl font-bold">Omnivia</span>
+            <span className="text-xl font-bold">Omnia</span>
           </Link>
         </div>
 
