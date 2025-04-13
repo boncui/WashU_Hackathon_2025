@@ -12,6 +12,13 @@ Backend Documentation
 2.) npm run dev
 
 
-Client_frontend Documenation
+frontend Documenation
 1.) npm install
 2.) npm run dev
+
+
+Thien Documentation
+1.)rm -rf node_modules package-lock.json
+2.) npm install --legacy-peer-deps
+3.) npm run dev
+
