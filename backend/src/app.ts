@@ -51,7 +51,7 @@ app.get('/query/:searchItem', async (req: Request, res: Response) => {
     const wordLimit = 20
     const instruction = 'You are a helpful consultant';
     let openAiResponse = await generateOpenAiResponse({
-        input: `Return a structured JSON array containing recommendation(s) and reasoning(s) based on the
+        input: `Return a structured JSON array containing one consolidated recommendation along with one or more reasoning(s) based on the
         the following links, using ${wordLimit} words or less per summary and point:
         ${newsLinks.join('\n')}`,
         instructions: instruction
