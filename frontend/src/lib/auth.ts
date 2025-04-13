@@ -31,7 +31,9 @@ export async function signIn({ email, password }: SignInCredentials): Promise<Us
     if (!res.ok) throw new Error(data.error || "Login failed")
 
     const { token, user } = data
-    localStorage.setItem(AUTH_TOKEN_KEY, token)
+    if (typeof window !== "undefined") {
+      localStorage.setItem(AUTH_TOKEN_KEY, token)
+    }
     return user
   } catch (err: any) {
     throw new Error(err.message || "Unexpected error during login")
@@ -59,7 +61,7 @@ export async function signUp({ fullName, email, password }: SignUpCredentials): 
 // 👤 GET CURRENT USER
 export async function getCurrentUser(): Promise<User | null> {
   try {
-    const token = localStorage.getItem(AUTH_TOKEN_KEY)
+    const token = typeof window !== "undefined" ? localStorage.getItem(AUTH_TOKEN_KEY) : null
     if (!token) return null
 
     const res = await fetch(`${API_BASE_URL}/me`, {
@@ -75,5 +77,7 @@ export async function getCurrentUser(): Promise<User | null> {
 
 // 🚪 LOGOUT
 export async function signOut(): Promise<void> {
-  localStorage.removeItem(AUTH_TOKEN_KEY)
+  if (typeof window !== "undefined") {
+    localStorage.removeItem(AUTH_TOKEN_KEY)
+  }
 }

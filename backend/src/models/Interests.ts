@@ -1,8 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose'
 
 export enum InterestType {
-  Type1 = 'Type1',
-  Type2 = 'Type2',
+  Type1 = 'Transactional',
+  Type2 = 'Informational',
 }
 
 export interface IInterests extends Document {
