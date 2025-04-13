@@ -95,7 +95,7 @@ export function StructuredChat() {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify({
-            name: goal || decision, // Use goal if available, otherwise use decision
+            name: decision, // <-- always use the decision as the interest title
             type: interestType,
             update: true // Set to true to indicate we want updates
           }),
@@ -269,7 +269,7 @@ export function StructuredChat() {
               ))}
             </div>
           </div>
-        ) : formStep === 0 ? (
+        ) : currentStep.field === "decision" ? (
           <div className="space-y-2">
             <Label htmlFor={currentStep.field}>Should I...</Label>
             <Input
@@ -281,7 +281,7 @@ export function StructuredChat() {
               autoFocus
             />
           </div>
-        ) : formStep === 3 ? (
+        ) : currentStep.field === "goal" ? (
           <div className="space-y-2">
             <Label htmlFor={currentStep.field}>To...</Label>
             <Textarea
@@ -295,7 +295,7 @@ export function StructuredChat() {
           </div>
         ) : (
           <div className="space-y-2">
-            <Label htmlFor={currentStep.field}>{formStep === 1 ? "In" : "In the"}</Label>
+            <Label htmlFor={currentStep.field}>{currentStep.field === "location" ? "In" : "In the"}</Label>
             <Input
               id={currentStep.field}
               value={currentStep.value}
@@ -378,7 +378,7 @@ export function StructuredChat() {
         {location && (
           <Badge variant="outline" className="bg-primary/10 text-primary">
             in {location}
-            <button className="ml-1 hover:text-primary" onClick={() => setFormStep(1)}>
+            <button className="ml-1 hover:text-primary" onClick={() => setFormStep(formSteps.findIndex(s => s.field === "location"))}>
               <X className="h-3 w-3" />
             </button>
           </Badge>
@@ -387,7 +387,7 @@ export function StructuredChat() {
         {timeframe && (
           <Badge variant="outline" className="bg-primary/10 text-primary">
             in the {timeframe}
-            <button className="ml-1 hover:text-primary" onClick={() => setFormStep(2)}>
+            <button className="ml-1 hover:text-primary" onClick={() => setFormStep(formSteps.findIndex(s => s.field === "timeframe"))}>
               <X className="h-3 w-3" />
             </button>
           </Badge>
@@ -396,7 +396,7 @@ export function StructuredChat() {
         {goal && (
           <Badge variant="outline" className="bg-primary/10 text-primary">
             to {goal}
-            <button className="ml-1 hover:text-primary" onClick={() => setFormStep(3)}>
+            <button className="ml-1 hover:text-primary" onClick={() => setFormStep(formSteps.findIndex(s => s.field === "goal"))}>
               <X className="h-3 w-3" />
             </button>
           </Badge>
@@ -431,7 +431,7 @@ export function StructuredChat() {
               </div>
               <h3 className="text-xl font-semibold mb-2">Interest Added Successfully!</h3>
               <p className="text-muted-foreground mb-6 max-w-md">
-                We've received your interest in "{goal}" and will gather relevant news and insights for you.
+                We've received your interest in "{decision}" and will gather relevant news and insights for you.
                 Check your feed shortly to see personalized updates.
               </p>
               <Button
