@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react"
 import InterestCard from "./interestCard"
-import { Interest } from "@/types/interest"
+import { IInterest } from "@/types/interest"
 import { Loader } from "lucide-react"
 
 export function InterestList() {
-  const [interests, setInterests] = useState<Interest[]>([])
+  const [interests, setInterests] = useState<IInterest[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export function InterestList() {
   }
 
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="flex flex-col gap-6 w-full">
       {interests.map((interest) => (
         <InterestCard key={interest._id} interest={interest} />
       ))}

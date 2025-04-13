@@ -86,62 +86,7 @@ export default function DashboardPage() {
 
               {/* Activity */}
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                {/*<Card className="col-span-4">
-                  <CardHeader>
-                    <CardTitle>Recent Interests</CardTitle>
-                    <CardDescription>Your most recent decision-making activity</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {[
-                      {
-                        question: "Should I invest in the stock market now?",
-                        date: "2 days ago",
-                        verdict: "Yes",
-                        confidence: 75,
-                      },
-                      {
-                        question: "Should I relocate to Austin for a new job?",
-                        date: "1 week ago",
-                        verdict: "Depends",
-                        confidence: 60,
-                      },
-                      {
-                        question: "Is now a good time to buy a car?",
-                        date: "2 weeks ago",
-                        verdict: "No",
-                        confidence: 82,
-                      },
-                    ].map((decision, i) => (
-                      <div key={i} className={`flex items-center justify-between py-3 ${i !== 0 ? "border-t" : ""}`}>
-                        <div>
-                          <div className="font-medium">{decision.question}</div>
-                          <div className="text-sm text-muted-foreground">{decision.date}</div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div
-                            className={`text-sm font-medium px-2 py-1 rounded-full ${
-                              decision.verdict === "Yes"
-                                ? "bg-green-500/10 text-green-500"
-                                : decision.verdict === "No"
-                                  ? "bg-red-500/10 text-red-500"
-                                  : "bg-amber-500/10 text-amber-500"
-                            }`}
-                          >
-                            {decision.verdict}
-                          </div>
-                          <div className="text-sm text-muted-foreground">{decision.confidence}%</div>
-                        </div>
-                      </div>
-                    ))}
-                    <div className="mt-4 text-center">
-                      <Link href="/dashboard/history">
-                        <Button variant="outline" size="sm">
-                          View all decisions
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>*/}
+                
 
 
 
