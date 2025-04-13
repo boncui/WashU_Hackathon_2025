@@ -18,7 +18,8 @@ import { BarChart, Clock, Zap, ArrowUpRight } from "lucide-react"
 import Link from "next/link"
 import { User } from "@/types/user"
 import Image from "next/image"
-
+import { InterestList } from "@/components/dashboard/interestList"
+import { getAuthToken } from "@/lib/auth"           // ← add this
 
 export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null)
@@ -97,23 +98,16 @@ export default function DashboardPage() {
                     <CardDescription>Categories you follow to stay informed</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                      {user.interests && user.interests.length > 0 ? (
-                        user.interests.map((interest) => (
-                          <Card key={interest._id} className="bg-muted p-4">
-                            <CardTitle className="text-base">{interest.name}</CardTitle>
-                            <CardDescription className="text-sm capitalize">{interest.type}</CardDescription>
-                            <p className="text-xs text-muted-foreground mt-2">
-                              {interest.update ? "✅ Updates enabled" : "🚫 Updates off"}
-                            </p>
-                          </Card>
-                        ))
-                      ) : (
-                        <p className="text-sm text-muted-foreground">You haven't added any interests yet.</p>
-                      )}
-                    </div>
+                  {user && (
+                    <InterestList
+                      userId={user._id}
+                      token={getAuthToken() ?? ""}                  // ← pass Bearer token
+                    />
+                  )}
                   </CardContent>
                 </Card>
+
+
               </div>
             </DashboardShell>
           </main>

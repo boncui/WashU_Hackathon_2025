@@ -57,6 +57,12 @@ export async function signUp({ fullName, email, password }: SignUpCredentials): 
   }
 }
 
+//help the InterestList(card)
+export function getAuthToken(): string | null {
+  if (typeof window === "undefined") return null
+  return localStorage.getItem("omnivia-auth-token")
+}
+
 // 👤 GET CURRENT USER (using token from localStorage)
 export async function getCurrentUser(): Promise<User | null> {
   try {

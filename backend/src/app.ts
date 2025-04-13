@@ -1,102 +1,98 @@
-//backend/src/app.ts
-import express, { Request, Response } from 'express'; //express is used to create the server
-import dotenv from 'dotenv'; //dotenv is used for managing enviorment variables
-import userRoutes from './routes/userRoutes';
-import interestsRoutes from './routes/interestsRoutes';
-import connectDB from './config/db';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import {getNews} from './dataCollection/getNews';
-import {getParsedOpenApiSummaryResponse} from './ai/openAi';
+// backend/src/app.ts
+import express, { Request, Response } from "express"
+import dotenv from "dotenv"
+import cors from "cors"
 
+import connectDB from "./config/db"
 
-dotenv.config();
-console.log('MONGO_URI:', process.env.MONGO_URI);
+// ✨ ROUTERS
+import userRoutes      from "./routes/userRoutes"
+import interestRoutes  from "./routes/interestRoutes"   // <-- singular “interest”
+import articleRoutes   from "./routes/articleRoutes"
 
-//Database connection
-connectDB();
+import { getNews } from "./dataCollection/getNews"
+import { getParsedOpenApiSummaryResponse } from "./ai/openAi"
 
-const app = express();
-const PORT = process.env.PORT || 5000; //PORT 5000 is being used by Mac
+dotenv.config()
+console.log("MONGO_URI:", process.env.MONGO_URI)
 
-const corsOptions = {
-    origin: ['http://localhost:3000',
-    ], // REPLACE w Frontend URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, //for cookies and tokens
-}
+// ────────────────────────────────────────────────────────────
+// DB
+// ────────────────────────────────────────────────────────────
+connectDB()
 
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-app.use(express.json());
+// ────────────────────────────────────────────────────────────
+// APP
+// ────────────────────────────────────────────────────────────
+const app  = express()
+const PORT = process.env.PORT || 5000
 
-//Base route for testing
-app.get('/', (req: Request, res: Response) => {
-    res.send('DevFest Backend is running! :D');
-});
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],        // TODO: add prod URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  }),
+)
+app.use(express.json())
 
-// Mount user routes
-app.use('/users', userRoutes);
-app.use('/interests', interestsRoutes);
+// ────────────────────────────────────────────────────────────
+// BASE
+// ────────────────────────────────────────────────────────────
+app.get("/", (_req: Request, res: Response) => {
+  res.send("DevFest Backend is running! :D")
+})
 
-// New endpoint to get raw news data
-app.get('/api/news', async (req: Request, res: Response) => {
-  const query = req.query.query as string;
-  const location = req.query.location as string || 'USA';
+// ────────────────────────────────────────────────────────────
+// ROUTES (NOTE THE PATHS)
+// ────────────────────────────────────────────────────────────
+app.use("/users",     userRoutes)      // e.g. /users/register, /users/login
+app.use("/users",     interestRoutes)  // e.g. /users/:userId/interests
+app.use("/articles",  articleRoutes)   // e.g. /articles/…
+
+// ────────────────────────────────────────────────────────────
+// NEWS + OPEN‑AI DEMO ENDPOINTS
+// ────────────────────────────────────────────────────────────
+app.get("/api/news", async (req, res) => {
+  const query    = req.query.query as string
+  const location = (req.query.location as string) || "USA"
 
   try {
-    const newsResponse = await getNews({query, location});
-    res.json(newsResponse);
-  } catch (error) {
-    res.status(500).json({ error: (error as Error).message });
+    const news = await getNews({ query, location })
+    res.json(news)
+  } catch (err) {
+    res.status(500).json({ error: (err as Error).message })
   }
-});
+})
 
-// Modified query endpoint to return processed data
-app.get('/query/:searchItem', async (req: Request, res: Response) => {
-    const searchItem = req.params.searchItem;
-    const newsResponse = await getNews({query: searchItem, location: 'USA'});
-    let newsLinks = [];
-    const newsResults = newsResponse.news_results;
-    let articleMap = new Map();
+app.get("/query/:searchItem", async (req, res) => {
+  const searchItem   = req.params.searchItem
+  const newsResponse = await getNews({ query: searchItem, location: "USA" })
 
-    for(let i = 0; i < 5; i++){
-        if (i < newsResults.length) {
-            articleMap.set(newsResults[i].link, newsResults[i]);
-            newsLinks.push(newsResults[i].link);
-        }
-    }
+  // take top 5 links
+  const links = newsResponse.news_results.slice(0, 5).map((n: any) => n.link)
 
-    console.log("news results", newsResults);
-    const wordLimit = 20
-    const instruction = 'You are a helpful consultant';
-    let openAiResponse = await getParsedOpenApiSummaryResponse({
-        input: `Return a structured JSON object EXACTLY in this format:
-                    {
-                      "recommendation": "A single string with your consolidated recommendation",
-                      "reasoning": ["An array of strings with reasons for the recommendation"],
-                      "articles": [
-                        {
-                          "title": "article title",
-                          "summary": "Summary of article",
-                          "key_points": ["Array of key points"]
-                        }
-                      ]
-                    }
-        based on the
-        the following links, using ${wordLimit} words or less per summary and point:
-        ${newsLinks.join('\n')}`,
-        instructions: instruction
-    });
-    console.log(openAiResponse);
+  const openAiResponse = await getParsedOpenApiSummaryResponse({
+    input: `
+      Return a JSON exactly like:
+      {
+        "recommendation": "...",
+        "reasoning": ["...", "..."],
+        "articles": [{ "title": "...", "summary": "...", "key_points": ["..."] }]
+      }
+      using 20 words or fewer per summary/key‑point, based on these links:
+      ${links.join("\n")}
+    `,
+    instructions: "You are a helpful consultant",
+  })
 
-    // Return the processed data as JSON instead of a simple text response
-    res.json(openAiResponse);
-});
+  res.json(openAiResponse)
+})
 
-
-//Start the server
+// ────────────────────────────────────────────────────────────
+// START
+// ────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+  console.log(`Server is running on port ${PORT}`)
+})
