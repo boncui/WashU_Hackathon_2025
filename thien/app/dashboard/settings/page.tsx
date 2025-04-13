@@ -1,4 +1,7 @@
-import { redirect } from "next/navigation"
+"use client"
+
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { DashboardShell } from "@/components/dashboard/shell"
 import { DashboardNav } from "@/components/dashboard/nav"
@@ -11,11 +14,31 @@ import { Switch } from "@/components/ui/switch"
 import { getCurrentUser } from "@/lib/auth"
 import { CheckCircle } from "lucide-react"
 
-export default async function SettingsPage() {
-  const user = await getCurrentUser()
+export default function SettingsPage() {
+  const [user, setUser] = useState<{ name: string; email: string; id: string } | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    async function loadUser() {
+      const currentUser = await getCurrentUser()
+      setUser(currentUser)
+      setIsLoading(false)
+
+      if (!currentUser) {
+        router.push("/login")
+      }
+    }
+
+    loadUser()
+  }, [router])
+
+  if (isLoading) {
+    return <div className="flex min-h-screen items-center justify-center">Loading...</div>
+  }
 
   if (!user) {
-    redirect("/login")
+    return null // Router will redirect
   }
 
   return (
@@ -53,7 +76,7 @@ export default async function SettingsPage() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="password">Password</Label>
-                      <Input id="password" type="password" value="••••••••" />
+                      <Input id="password" type="password" defaultValue="••••••••" readOnly />
                     </div>
                   </CardContent>
                   <CardFooter>

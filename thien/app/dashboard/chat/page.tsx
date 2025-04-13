@@ -1,15 +1,38 @@
-import { redirect } from "next/navigation"
+"use client"
+
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { DashboardShell } from "@/components/dashboard/shell"
 import { DashboardNav } from "@/components/dashboard/nav"
 import { StructuredChat } from "@/components/structured-chat"
 import { getCurrentUser } from "@/lib/auth"
 
-export default async function ChatPage() {
-  const user = await getCurrentUser()
+export default function ChatPage() {
+  const [user, setUser] = useState<{ name: string; email: string; id: string } | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    async function loadUser() {
+      const currentUser = await getCurrentUser()
+      setUser(currentUser)
+      setIsLoading(false)
+
+      if (!currentUser) {
+        router.push("/login")
+      }
+    }
+
+    loadUser()
+  }, [router])
+
+  if (isLoading) {
+    return <div className="flex min-h-screen items-center justify-center">Loading...</div>
+  }
 
   if (!user) {
-    redirect("/login")
+    return null // Router will redirect
   }
 
   return (

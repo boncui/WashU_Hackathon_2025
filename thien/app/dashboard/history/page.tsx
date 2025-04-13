@@ -1,19 +1,44 @@
-import { redirect } from "next/navigation"
+"use client"
+
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { DashboardShell } from "@/components/dashboard/shell"
 import { DashboardNav } from "@/components/dashboard/nav"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Switch } from "@/components/ui/switch"
 import { getCurrentUser } from "@/lib/auth"
-import { Search, Filter, ArrowUpDown } from "lucide-react"
-import Link from "next/link"
+import { CheckCircle } from "lucide-react"
 
-export default async function HistoryPage() {
-  const user = await getCurrentUser()
+export default function SettingsPage() {
+  const [user, setUser] = useState<{ name: string; email: string; id: string } | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    async function loadUser() {
+      const currentUser = await getCurrentUser()
+      setUser(currentUser)
+      setIsLoading(false)
+
+      if (!currentUser) {
+        router.push("/login")
+      }
+    }
+
+    loadUser()
+  }, [router])
+
+  if (isLoading) {
+    return <div className="flex min-h-screen items-center justify-center">Loading...</div>
+  }
 
   if (!user) {
-    redirect("/login")
+    return null // Router will redirect
   }
 
   return (
@@ -23,116 +48,142 @@ export default async function HistoryPage() {
         <DashboardNav />
         <main className="flex w-full flex-col overflow-hidden">
           <DashboardShell className="mb-14">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold tracking-tight">Decision History</h2>
-                <p className="text-muted-foreground">View and manage your past decisions</p>
-              </div>
-              <Link href="/dashboard/chat">
-                <Button>New Decision</Button>
-              </Link>
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">Settings</h2>
+              <p className="text-muted-foreground">Manage your account settings and preferences</p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search decisions..." className="pl-8" />
-              </div>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-                <span className="sr-only">Filter</span>
-              </Button>
-              <Button variant="outline" size="icon">
-                <ArrowUpDown className="h-4 w-4" />
-                <span className="sr-only">Sort</span>
-              </Button>
-            </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>All Decisions</CardTitle>
-                <CardDescription>Your complete decision history</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {[
-                    {
-                      question: "Should I invest in the stock market now?",
-                      date: "Apr 10, 2025",
-                      verdict: "Yes",
-                      confidence: 75,
-                      category: "Finance",
-                    },
-                    {
-                      question: "Should I relocate to Austin for a new job?",
-                      date: "Apr 5, 2025",
-                      verdict: "Depends",
-                      confidence: 60,
-                      category: "Career",
-                    },
-                    {
-                      question: "Is now a good time to buy a car?",
-                      date: "Mar 29, 2025",
-                      verdict: "No",
-                      confidence: 82,
-                      category: "Automotive",
-                    },
-                    {
-                      question: "Should I refinance my mortgage?",
-                      date: "Mar 22, 2025",
-                      verdict: "Yes",
-                      confidence: 88,
-                      category: "Real Estate",
-                    },
-                    {
-                      question: "Is it worth investing in cryptocurrency right now?",
-                      date: "Mar 15, 2025",
-                      verdict: "Depends",
-                      confidence: 55,
-                      category: "Finance",
-                    },
-                    {
-                      question: "Should I start a side business?",
-                      date: "Mar 8, 2025",
-                      verdict: "Yes",
-                      confidence: 70,
-                      category: "Career",
-                    },
-                  ].map((decision, i) => (
-                    <div
-                      key={i}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg"
-                    >
-                      <div className="space-y-1 mb-2 sm:mb-0">
-                        <div className="font-medium">{decision.question}</div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>{decision.date}</span>
-                          <span>•</span>
-                          <span>{decision.category}</span>
+            <Tabs defaultValue="account" className="w-full">
+              <TabsList className="grid w-full grid-cols-3 mb-8">
+                <TabsTrigger value="account">Account</TabsTrigger>
+                <TabsTrigger value="notifications">Notifications</TabsTrigger>
+                <TabsTrigger value="subscription">Subscription</TabsTrigger>
+              </TabsList>
+              <TabsContent value="account">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Account Information</CardTitle>
+                    <CardDescription>Update your account details and preferences</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Name</Label>
+                      <Input id="name" defaultValue={user.name} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input id="email" type="email" defaultValue={user.email} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="password">Password</Label>
+                      <Input id="password" type="password" value="••••••••" />
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button>Save changes</Button>
+                  </CardFooter>
+                </Card>
+              </TabsContent>
+              <TabsContent value="notifications">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Notification Preferences</CardTitle>
+                    <CardDescription>Choose how you want to be notified</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {[
+                      {
+                        title: "Email Notifications",
+                        description: "Receive emails about your decisions and account updates",
+                        defaultChecked: true,
+                      },
+                      {
+                        title: "Decision Reminders",
+                        description: "Get reminders about decisions you've made",
+                        defaultChecked: true,
+                      },
+                      {
+                        title: "Marketing Communications",
+                        description: "Receive updates about new features and offers",
+                        defaultChecked: false,
+                      },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center justify-between space-y-0">
+                        <div className="space-y-0.5">
+                          <Label htmlFor={`notification-${i}`}>{item.title}</Label>
+                          <p className="text-sm text-muted-foreground">{item.description}</p>
                         </div>
+                        <Switch id={`notification-${i}`} defaultChecked={item.defaultChecked} />
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`text-sm font-medium px-2 py-1 rounded-full ${
-                            decision.verdict === "Yes"
-                              ? "bg-green-500/10 text-green-500"
-                              : decision.verdict === "No"
-                                ? "bg-red-500/10 text-red-500"
-                                : "bg-amber-500/10 text-amber-500"
-                          }`}
-                        >
-                          {decision.verdict}
+                    ))}
+                  </CardContent>
+                  <CardFooter>
+                    <Button>Save preferences</Button>
+                  </CardFooter>
+                </Card>
+              </TabsContent>
+              <TabsContent value="subscription">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Subscription Plan</CardTitle>
+                    <CardDescription>Manage your subscription and billing</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="rounded-lg border p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-lg font-medium">Free Plan</div>
+                          <div className="text-sm text-muted-foreground">Current plan</div>
                         </div>
-                        <div className="text-sm text-muted-foreground">{decision.confidence}%</div>
-                        <Button variant="ghost" size="sm">
-                          View
-                        </Button>
+                        <div className="text-sm font-medium text-green-500">Active</div>
+                      </div>
+                      <div className="mt-4 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <span className="text-sm">5 decisions per month</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <span className="text-sm">Basic market data</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <span className="text-sm">7-day decision history</span>
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+
+                    <div className="rounded-lg border p-4 bg-muted/30">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-lg font-medium">Pro Plan</div>
+                          <div className="text-sm text-muted-foreground">$9.99/month</div>
+                        </div>
+                        <Button>Upgrade</Button>
+                      </div>
+                      <div className="mt-4 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <span className="text-sm">Unlimited decisions</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <span className="text-sm">Advanced market data</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <span className="text-sm">Unlimited decision history</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          <span className="text-sm">Priority support</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </DashboardShell>
         </main>
       </div>
