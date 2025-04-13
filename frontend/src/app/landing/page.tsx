@@ -39,12 +39,12 @@ export default function Home() {
               </Link>
             </nav>
             <ThemeToggle />
-            <Link href="/login">
+            <Link href="/auth/login">
               <Button variant="outline" size="sm">
                 Log in
               </Button>
             </Link>
-            <Link href="/signup">
+            <Link href="/auth/signup">
               <Button
                 size="sm"
                 className="bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90 transition-opacity"
