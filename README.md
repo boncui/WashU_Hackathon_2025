@@ -15,6 +15,10 @@ cd backend
 npm install
 npm run dev
 
+## Scheduler Setup
+cd backend
+npm run scheduler
+
 ## 🎨 Frontend Setup
 cd frontend
 npm install --legacy-peer-deps

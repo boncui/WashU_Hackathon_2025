@@ -40,6 +40,20 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/users', userRoutes);
 app.use('/interests', interestsRoutes);
 
+// New endpoint to get raw news data
+app.get('/api/news', async (req: Request, res: Response) => {
+  const query = req.query.query as string;
+  const location = req.query.location as string || 'USA';
+
+  try {
+    const newsResponse = await getNews({query, location});
+    res.json(newsResponse);
+  } catch (error) {
+    res.status(500).json({ error: (error as Error).message });
+  }
+});
+
+// Modified query endpoint to return processed data
 app.get('/query/:searchItem', async (req: Request, res: Response) => {
     const searchItem = req.params.searchItem;
     const newsResponse = await getNews({query: searchItem, location: 'USA'});
@@ -48,8 +62,10 @@ app.get('/query/:searchItem', async (req: Request, res: Response) => {
     let articleMap = new Map();
 
     for(let i = 0; i < 5; i++){
-        articleMap.set(newsResults[i].link, newsResults[i]);
-        newsLinks.push(newsResults[i].link);
+        if (i < newsResults.length) {
+            articleMap.set(newsResults[i].link, newsResults[i]);
+            newsLinks.push(newsResults[i].link);
+        }
     }
 
     console.log("news results", newsResults);
@@ -62,7 +78,6 @@ app.get('/query/:searchItem', async (req: Request, res: Response) => {
                       "reasoning": ["An array of strings with reasons for the recommendation"],
                       "articles": [
                         {
-                        /*  "link": "provided link",*/
                           "title": "article title",
                           "summary": "Summary of article",
                           "key_points": ["Array of key points"]
@@ -76,8 +91,8 @@ app.get('/query/:searchItem', async (req: Request, res: Response) => {
     });
     console.log(openAiResponse);
 
-
-    res.send('Response received');
+    // Return the processed data as JSON instead of a simple text response
+    res.json(openAiResponse);
 });
 
 
@@ -85,4 +100,3 @@ app.get('/query/:searchItem', async (req: Request, res: Response) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
