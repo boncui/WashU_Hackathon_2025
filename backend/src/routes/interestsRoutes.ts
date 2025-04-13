@@ -18,10 +18,10 @@ router.post('/:userId/interests', authenticate, async (req: Request, res: Respon
 
     const articleDocs = await ArticleModel.find({ _id: { $in: articles } });
 
-    if (articleDocs.length !== articles.length) {
+ /*   if (articleDocs.length !== articles.length) {
       return res.status(400).json({ error: 'One or more articles not found' });
     }
-
+*/
     const interest = await InterestModel.create({ name, type, update, articles });
 
     await UserModel.findByIdAndUpdate(req.params.userId, {

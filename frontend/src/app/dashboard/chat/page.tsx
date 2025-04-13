@@ -27,27 +27,34 @@ export default function ChatPage() {
     loadUser()
   }, [router])
 
-  if (isLoading) {
-    return <div className="flex min-h-screen items-center justify-center">Loading...</div>
-  }
+  // Render function with all conditional rendering inside
+  const renderContent = () => {
+    if (isLoading) {
+      return <div className="flex min-h-screen items-center justify-center">Loading...</div>
+    }
 
-  if (!user) {
-    return null // Router will redirect
-  }
+    if (!user) {
+      return null // Router will redirect
+    }
 
-  return (
-    <div className="flex min-h-screen flex-col">
-      <DashboardHeader user={{ name: user.fullName, email: user.email }} />
-      <div className="container flex-1 items-start md:grid md:grid-cols-[220px_1fr] md:gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
-        <DashboardNav />
-        <main className="flex w-full flex-col overflow-hidden">
-          <DashboardShell className="mb-14">
-          <div className="w-full">
-            <StructuredChat />
-          </div>
-          </DashboardShell>
-        </main>
+    return (
+      <div className="flex min-h-screen flex-col">
+        <DashboardHeader user={{ name: user.fullName, email: user.email }} />
+        <div className="container flex-1 items-start md:grid md:grid-cols-[220px_1fr] md:gap-6 lg:grid-cols-[240px_1fr] lg:gap-10">
+          <DashboardNav />
+          <main className="flex w-full flex-col overflow-hidden">
+            <DashboardShell className="mb-14">
+              <div  className="w-full">
+                  <StructuredChat />
+
+              </div>
+            </DashboardShell>
+          </main>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
+
+  // Always return from the main component function
+  return renderContent()
 }
