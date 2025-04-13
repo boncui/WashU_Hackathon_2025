@@ -5,7 +5,7 @@ import connectDB from './config/db';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import {getNews} from './dataCollection/getNews';
-import {getParsedOpenApiSummaryResponse} from './ai/openAi';
+import {generateOpenAiResponse} from './ai/openAi';
 
 
 dotenv.config();
@@ -49,10 +49,10 @@ app.get('/query/:searchItem', async (req: Request, res: Response) => {
         newsLinks.push(newsResults[i].link);
     }
     const wordLimit = 20
-    const instruction = 'You are a helpful financial analyst';
-    let openAiResponse = await getParsedOpenApiSummaryResponse({
-        input: `Return a structured JSON array where each element contains a summary and key points (as keyPoints)
-        for each of the following links, using ${wordLimit} words or less per summary and point:
+    const instruction = 'You are a helpful consultant';
+    let openAiResponse = await generateOpenAiResponse({
+        input: `Return a structured JSON array containing recommendation(s) and reasoning(s) based on the
+        the following links, using ${wordLimit} words or less per summary and point:
         ${newsLinks.join('\n')}`,
         instructions: instruction
     });
