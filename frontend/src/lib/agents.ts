@@ -1,7 +1,7 @@
 import { generateObject } from "ai"
 import { openai } from "@ai-sdk/openai"
 import { z } from "zod"
-import type { DecisionReportType } from "./types"
+import type { DecisionReportType } from "../types/types"
 import { fetchMarketData } from "./market-data"
 
 // Define the schema for the decision report

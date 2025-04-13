@@ -9,7 +9,7 @@ import { SendIcon, Sparkles } from "lucide-react"
 import { ChatMessage } from "@/components/chat-message"
 import { DecisionReport } from "@/components/decision-report"
 import { processDecisionQuery } from "@/lib/agents"
-import type { DecisionReportType } from "@/lib/types"
+import type { DecisionReportType } from "@/types/types"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export function Chat() {

@@ -28,7 +28,7 @@ export default function LoginPage() {
       await signIn({ email, password })
       toast({
         title: "Login successful",
-        description: "Welcome back to ShouldIQ!",
+        description: "Welcome back to Omnivia!",
       })
       router.push("/dashboard")
     } catch (error) {
@@ -50,7 +50,7 @@ export default function LoginPage() {
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
               <HelpCircle className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold">ShouldIQ</span>
+            <span className="text-xl font-bold">Omnivia</span>
           </Link>
         </div>
 

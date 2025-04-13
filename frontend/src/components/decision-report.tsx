@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import type { DecisionReportType } from "@/lib/types"
+import type { DecisionReportType } from "@/types/types"
 import {
   ArrowDownIcon,
   ArrowUpIcon,

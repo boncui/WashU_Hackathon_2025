@@ -14,7 +14,7 @@ export default function Home() {
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500 flex items-center justify-center">
               <HelpCircle className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold">ShouldIQ</span>
+            <span className="text-xl font-bold">TEMP NAME</span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -39,12 +39,12 @@ export default function Home() {
               </Link>
             </nav>
             <ThemeToggle />
-            <Link href="/login">
+            <Link href="/auth/login">
               <Button variant="outline" size="sm">
                 Log in
               </Button>
             </Link>
-            <Link href="/signup">
+            <Link href="/auth/signup">
               <Button
                 size="sm"
                 className="bg-gradient-to-r from-purple-500 to-cyan-500 hover:opacity-90 transition-opacity"
