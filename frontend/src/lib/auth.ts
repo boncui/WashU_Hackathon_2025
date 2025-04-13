@@ -49,13 +49,25 @@ export async function signUp({ fullName, email, password }: SignUpCredentials): 
     })
 
     const data = await res.json()
-    if (!res.ok) throw new Error(data.error || "Signup failed")
+
+    if (!res.ok) {
+      // 👇 Enhanced error handling
+      if (data.errors) {
+        const combined = data.errors.map((e: any) => e.msg).join(" ")
+        throw new Error(combined)
+      } else if (data.error) {
+        throw new Error(data.error)
+      } else {
+        throw new Error("Signup failed")
+      }
+    }
 
     return data // data is the new user object
   } catch (err: any) {
     throw new Error(err.message || "Unexpected error during signup")
   }
 }
+
 
 //help the InterestList(card)
 export function getAuthToken(): string | null {

@@ -40,7 +40,7 @@ export default function SignupPage() {
         title: "Account created",
         description: "You can now log in to your Omnivia account.",
       })
-      router.push("/login") // ✅ redirect to login page
+      router.push("/auth/login") // ✅ redirect to login page
     } catch (error: any) {
       toast({
         title: "Sign up failed",

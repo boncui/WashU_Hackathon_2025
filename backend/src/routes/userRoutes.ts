@@ -24,7 +24,7 @@ const validateCreateUser = [
         .isLength({ min: 8 }).withMessage('Password must be at least 8 characters long')
         .matches(/[A-Z]/).withMessage('Password must contain at least one uppercase letter.')
         .matches(/[a-z]/).withMessage('Password must contain at least one lowercase letter.')
-        .matches(/[!@#$%^&*(),.?":{}|<>]/).withMessage('Password must contain at least one special character.'),
+        .matches(/[!@#$%^&*(),.?":{}|<>]/).withMessage('Password must contain at least one special character.')
 ];
 
 // 🔹 Middleware to handle validation errors
@@ -43,7 +43,7 @@ router.post('/register', validateCreateUser, handleValidationErrors, async (req:
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({ error: 'Email already in use.' });
+        return res.status(400).json({ error: 'Email already in use.' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
