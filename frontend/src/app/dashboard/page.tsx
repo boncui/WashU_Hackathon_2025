@@ -65,13 +65,13 @@ export default function DashboardPage() {
                 <p className="text-muted-foreground">Here's an overview of your decision-making activity</p>
               </div>
               <Link href="/dashboard/chat">
-                <Button>New Decision</Button>
+                <Button>Add Interest</Button>
               </Link>
             </div>
 
             {/* Stats */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <StatCard title="Decisions Made" value="12" icon={<BarChart />} subtitle="+2 from last month" />
+              <StatCard title="Interests Investigated" value="12" icon={<BarChart />} subtitle="+2 from last month" />
               <StatCard title="Decisions Remaining" value="3" icon={<Clock />} subtitle="On free plan (5/mo)" />
               <StatCard title="Top Category" value="Finance" icon={<Zap />} subtitle="5 decisions this month" />
               <StatCard title="Subscription" value="Free" icon={<ArrowUpRight />} subtitle={
@@ -83,9 +83,9 @@ export default function DashboardPage() {
 
             {/* Activity */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <Card className="col-span-4">
+              {/* <Card className="col-span-4">
                 <CardHeader>
-                  <CardTitle>Recent Decisions</CardTitle>
+                  <CardTitle>Recent Interests</CardTitle>
                   <CardDescription>Your most recent decision-making activity</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -138,32 +138,8 @@ export default function DashboardPage() {
                     </Link>
                   </div>
                 </CardContent>
-              </Card>
-              <Card className="col-span-3">
-                <CardHeader>
-                  <CardTitle>Suggested Decisions</CardTitle>
-                  <CardDescription>Questions you might want to explore</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      "Should I refinance my mortgage with current interest rates?",
-                      "Is it a good time to start a side business?",
-                      "Should I invest in renewable energy stocks?",
-                    ].map((suggestion, i) => (
-                      <div key={i} className="flex items-start gap-2">
-                        <div className="rounded-full bg-primary/10 p-1">
-                          <Zap className="h-4 w-4 text-primary" />
-                        </div>
-                        <div className="text-sm">{suggestion}</div>
-                      </div>
-                    ))}
-                    <Link href="/dashboard/chat">
-                      <Button className="w-full mt-2">Ask a question</Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
+              </Card> */}
+              
 
               
               {/* Your Interests */}
