@@ -3,17 +3,64 @@ import { Badge } from "@/components/ui/badge"
 import { IInterest } from "@/types/interest"
 import Image from "next/image"
 import Link from "next/link"
+import { X } from "lucide-react"
 
-export default function InterestCard({ interest }: { interest: IInterest }) {
+const API =
+  (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5001").replace(
+    /\/users\/?$/i,
+    "",
+  )
+
+
+export default function InterestCard({
+  interest,
+  userId,
+  token,
+  onDelete,
+}: {
+  interest: IInterest
+  userId: string
+  token: string
+  onDelete?: (id: string) => void // callback to remove from list
+}) {
+  const handleDelete = async () => {
+    const confirmed = window.confirm(`Are you sure you want to delete "${interest.name}"?`)
+    if (!confirmed) return
+
+    try {
+      const res = await fetch(`${API}/users/${userId}/interests/${interest._id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      })
+
+      if (!res.ok) {
+        const err = await res.text()
+        throw new Error(`Failed to delete: ${err}`)
+      }
+
+      if (onDelete) onDelete(interest._id)
+    } catch (err) {
+      console.error("❌ Failed to delete interest:", err)
+      alert("Error deleting interest")
+    }
+  }
+
   return (
-    <Card className="w-full mb-6">
+    <Card className="w-full mb-6 relative">
+      {/* Delete Button */}
+      <button
+        onClick={handleDelete}
+        className="absolute top-3 right-3 text-muted-foreground hover:text-red-500"
+        title="Delete Interest"
+      >
+        <X className="w-5 h-5" />
+      </button>
+
       <CardHeader>
-        <div className="flex justify-between items-center">
-          <div>
-            <CardTitle className="text-xl">{interest.name}</CardTitle>
-            <p className="text-sm text-muted-foreground capitalize">{interest.type}</p>
-            <p className="text-xs mt-1">{interest.update ? "✅ Updates enabled" : "🚫 Updates off"}</p>
-          </div>
+        <div>
+          <CardTitle className="text-xl">{interest.name}</CardTitle>
+          <p className="text-sm text-muted-foreground capitalize">{interest.type}</p>
+          <p className="text-xs mt-1">{interest.update ? "✅ Updates enabled" : "🚫 Updates off"}</p>
         </div>
       </CardHeader>
 
