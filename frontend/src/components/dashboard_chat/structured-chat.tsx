@@ -435,7 +435,10 @@ export function StructuredChat() {
                 Check your feed shortly to see personalized updates.
               </p>
               <Button
-                onClick={resetForm}
+                onClick={() => {
+                  resetForm()
+                  setMessages([])   // 🔥 Clear messages to reset view
+                }}
                 className="bg-primary hover:bg-primary/90 text-white"
               >
                 Add Another Interest
