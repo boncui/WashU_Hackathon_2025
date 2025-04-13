@@ -100,9 +100,9 @@ export default function SignupPage() {
                   required
                 />
                 <div className="text-xs text-muted-foreground">
-                  Must be at least 8 characters long
-                  Must contain a special character
-                  Must at least have one capital letter
+                  <li>Must be at least 8 characters long</li>
+                  <li>Must contain a special character</li>
+                  <li>Must at least have one capital letter</li>
                 </div>
               </div>
               <div className="space-y-2 pt-2">
